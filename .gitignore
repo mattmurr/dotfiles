@@ -1,0 +1,8 @@
+weechat/.weechat/logs/
+weechat/.weechat/weechat.log
+weechat/.weechat/weechat_fifo
+
+tmux/.tmux/plugins/*
+!tmux/.tmux/plugins/tpm
+
+fontconfig/.local/share/fonts/*/*.uuid

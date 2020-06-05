@@ -1,0 +1,5 @@
+#!/bin/sh
+CHARGE=$(cat /sys/class/power_supply/$1/capacity)
+STATUS=$(sed "s/Discharging/🔋/;s/Not charging/🛑/;s/Charging/🔌/;s/Unknown/♻/;s/Full/⚡/" /sys/class/power_supply/$1/status)
+
+echo "$STATUS $CHARGE%"

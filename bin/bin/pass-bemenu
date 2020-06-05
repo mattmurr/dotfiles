@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+# Find *.gpg files and trim with sed, pipe into dmenu
+target=$(find ~/.password-store/ -not -path '*/.git/*' -type f | grep '\.gpg$' | sed -e 's/.*password-store\/\(.*\)\.gpg/\1/' | bemenu -i)
+
+# Copy to clipboard
+case $1 in
+	-o | otp) pass otp -c "$target" >/dev/null;;
+	*) pass -c "$target" >/dev/null;;
+esac
+# send a notification (which lasts 45 secs)
+notify-send -t 45000 'Pass' "$target will clear in 45 seconds."

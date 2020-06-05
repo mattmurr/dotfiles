@@ -1,0 +1,13 @@
+[user]
+	name = Matthew Murray
+	email = matt@compti.me
+	signingkey = 420A574BA0B6FD5A265B9F9701D9BDE7F8873C6B
+[commit]
+	gpgsign = true
+[core]
+	excludesfile = ~/.gitignore_global
+[sendemail]
+  smtpserver = mail.compti.me
+	smtpuser = matt
+	smtpencryption = tls
+	smtpserverport = 465
