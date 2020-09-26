@@ -1,8 +1,0 @@
-#!/bin/sh
-MAILBOX=$(ls $1 | wc -l)
-
-if [ "$MAILBOX" -eq 0 ]; then
-  echo "📪 $MAILBOX"
-else
-  echo "📫 $MAILBOX"
-fi

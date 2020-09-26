@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# The window id
+id=$(xdo id)
+
+# Hide the terminal
+xdo hide
+
+# Wait until the process has stopped and show the terminal
+$("$@") > /dev/null 2>&1
+xdo show "$id"

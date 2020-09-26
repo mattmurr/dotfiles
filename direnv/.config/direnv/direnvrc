@@ -1,0 +1,7 @@
+layout_foodie-backend() {
+  export FOODIE_SECRET="SomeOtherSecret"
+}
+
+layout_flutter() {
+  export CHROME_EXECUTABLE=/usr/bin/chromium
+}

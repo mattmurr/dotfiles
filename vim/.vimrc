@@ -1,61 +1,66 @@
-set nocompatible
 set encoding=utf-8
-" Show relative line numbers, but also the current line number.
-set number relativenumber
-
-" Disable mouse input
+set nocompatible
+filetype plugin indent on
+syntax on
+set hidden
+set noswapfile
 set mouse=
 
-" Disable case sensivity
-set ignorecase
-set smartcase
-
-" Tabs
-set expandtab
-set shiftwidth=2
-set softtabstop=2
-set tabstop=2
-
-" Autocompletion
-set wildmode=longest,list,full
-
-" Enable the sign column
-set signcolumn=yes
-
-" Display vertical line at 80 char.
-set colorcolumn=80
-" Indicate the line the cursor is currently on.
-set cursorline
-
-" Update title of the term emulator
 set title
 autocmd bufenter * let &titlestring = expand('%:p').' - NVIM'
 
-set hidden
-set incsearch
-set hlsearch
+set timeoutlen=1000 
+set ttimeoutlen=0
 
-" Continue to show statusline with multiple buffers
-set laststatus=2
-set noshowmode
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2 
+set expandtab    
+set autoindent
 
-" Give more space for displaying messages.
-set cmdheight=2
+let mapleader = " "
 
-" Don't pass messages to |ins-completion-menu|.
+set hls
+set is
+set cursorline
+set wildmode=longest,list,full
+set ignorecase
+set smartcase
+
+set cmdheight=1
 set shortmess+=c
-
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable delays and poor user experience.
 set updatetime=100
+" Automatically reload files that have changed externally
+set autoread
+
+let $RTP=split(&runtimepath, ',')[0] " Expected to return ~/.vim
+let $RC="~/.vimrc"
+
+if exists('g:started_by_firenvim')
+  set laststatus=0
+else
+  set laststatus=2
+endif
 
 " Set the leader key to be space.
 let mapleader = " "
 
-" Sources the stuff in the directory
-set rtp^=/usr/share/vim/vimfiles/
-
 " Toggle spell checking.
 map <leader>s :setlocal spell! spelllang=en_gb<CR>
+
+" Sign with gpg
+nnoremap <leader>ps :%!gpg --clear-sign<CR>
+vnoremap <leader>ps :!gpg --clear-sign<CR>
+" Encrypt with gpg using a public key
+nnoremap <leader>pe :%!gpg -sea -r 
+vnoremap <leader>pe :!gpg -sea -r 
+" Encrypt with gpg using a symmetric cipher
+nnoremap <leader>pp :%!gpg -ca<CR>
+vnoremap <leader>pp :!gpg -ca<CR>
+" Decrypt with gpg
+nnoremap <leader>pd :%!gpg -d<CR> 
+vnoremap <leader>pd :!gpg -d<CR> 
 
 " https://github.com/junegunn/vim-plug/wiki/faq#fatal-dumb-http-transport-does-not-support---depth
 let g:plug_shallow = 0
@@ -70,45 +75,32 @@ endif
 " Define the plugins
 call plug#begin('~/.vim/plugged')
 
-" LSP
+Plug 'mattmurr/vim-colors-synthetic'
+
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-" Colorscheme
-"Plug 'https://git.compti.me/vim-colors-synthetic'
-" FZF integration
 Plug 'junegunn/fzf.vim'
-" Alternates the colors for braces
-Plug 'luochen1990/rainbow'
-" Easier commenting using <leader>cc or <leader>cu
 Plug 'scrooloose/nerdcommenter'
-" Shows diff indicators within the signcolumn
 Plug 'airblade/vim-gitgutter'
-" No nonsense statusbar
 Plug 'itchyny/lightline.vim'
-" Visually display color of text
-Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
-" Easily add license headers to source files, my fork contains some extra
-" license types 
-Plug 'mattmurr/vim-header'
-" Nunjucks and such syntax
-Plug 'Glench/Vim-Jinja2-Syntax'
-" Zig language
-Plug 'ziglang/zig.vim'
-" Typescript 
-Plug 'leafgarland/typescript-vim'
-Plug 'peitalin/vim-jsx-typescript'
+
+Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
+
+Plug 'MaxMEllon/vim-jsx-pretty'
+Plug 'pangloss/vim-javascript'
+Plug 'jparise/vim-graphql'
+Plug 'dart-lang/dart-vim-plugin'
+Plug 'elixir-editors/vim-elixir'
 
 call plug#end()
 
-" Colors
 set t_Co=256
-set termguicolors " Required for rainbow parenthesis and hexokinase.
+set termguicolors
 set background=dark
-"colorscheme synthetic
-" Transparent background
-hi Normal guibg=NONE ctermbg=NONE
-hi SignColumn guibg=NONE ctermbg=NONE
-hi Pmenu guibg=black
-hi Pmenusel guifg=black
+colorscheme synthetic
+highlight! link SignColumn LineNr
+"hi CursorLine cterm=NONE ctermbg=234 ctermfg=NONE
+"hi SignColumn ctermbg=NONE
+hi Pmenu guibg=black guifg=white
 
 " fzf
 let g:fzf_layout = { 'down': '~30%' }
@@ -120,16 +112,11 @@ let g:fzf_action = {
       \ 'ctrl-h': 'split',
       \ 'ctrl-v': 'vsplit' }
 
-" License headers.
-let g:header_auto_add_header = 0
-let g:header_field_author = 'Matthew Murray'
-let g:header_field_author_email = 'matt@compti.me'
+" firenvim (vim in the browser)
+let g:firenvim_config = {'localSettings': { '.*': { 'priority': 1, 'takeover': 'never' }}}
 
-" Enable rainbow by default.
-let g:rainbow_active = 1
-
-" Display colors in background behind the text.
-let g:Hexokinase_highlighters = ['backgroundfull']
+" coc
+let g:coc_global_extensions = ['coc-eslint', 'coc-tailwindcss', 'coc-html', 'coc-json', 'coc-prettier', 'coc-tsserver', 'coc-xml', 'coc-python', 'coc-go', 'coc-java', 'coc-snippets', 'coc-flutter', 'coc-elixir', 'coc-r-lsp']
 
 " Use <tab> to trigger completion
 function! s:check_back_space() abort
@@ -154,14 +141,14 @@ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gD :sp <CR><Plug>(coc-definition)
 nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
+nmap <silent> gI :sp <CR><Plug>(coc-implementation)
 
 nmap <silent> g[ <Plug>(coc-diagnostic-prev)
 nmap <silent> g] <Plug>(coc-diagnostic-next)
 
-nn <silent> K :call CocActionAsync('doHover')<cr>
+nn <silent> K :call CocActionAsync('doHover')<CR>
 
 au CursorHold * sil call CocActionAsync('highlight')
 au CursorHoldI * sil call CocActionAsync('showSignatureHelp')
@@ -172,13 +159,20 @@ nmap <F2> <Plug>(coc-rename)
 " Add `:Format` command to format current buffer.
 command! -nargs=0 Format :call CocAction('format')
 
+" CocAction
+nmap <Leader>a :<C-u>CocAction<cr>
+
+function! CocCurrentFunction()
+    return get(b:, 'coc_current_function', '')
+endfunction
+
 let g:lightline = {
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ]
+      \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
       \ },
       \ 'component_function': {
-      \   'cocstatus': 'coc#status'
+      \   'cocstatus': 'coc#status',
+      \   'currentfunction': 'CocCurrentFunction'
       \ },
       \ }
-

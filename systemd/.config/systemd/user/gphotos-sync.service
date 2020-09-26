@@ -1,0 +1,9 @@
+[Unit]
+Description=Sync Google Photos
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/gphotos-sync '/home/matt/Pictures/Google Photos'
+
+[Install]
+WantedBy=default.target

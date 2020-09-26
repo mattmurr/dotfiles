@@ -1,7 +1,7 @@
 [user]
 	name = Matthew Murray
 	email = matt@compti.me
-	signingkey = 420A574BA0B6FD5A265B9F9701D9BDE7F8873C6B
+	signingkey = F6BC413C0B3C6A7120715D6FBDAF06B2440BC92B
 [commit]
 	gpgsign = true
 [core]
@@ -11,3 +11,18 @@
 	smtpuser = matt
 	smtpencryption = tls
 	smtpserverport = 465
+
+[merge]
+	tool = vimmerge
+[mergetool]
+	keepBackup = false
+[mergetool "vimmerge"]
+  cmd = nvim -f -c \"Gdiffsplit!\" \"$MERGED\"
+
+[diff]
+	tool = vimdiff
+[difftool]
+	keepBackup = false
+[difftool "vimdiff"]
+  path = nvim
+  prompt = false
