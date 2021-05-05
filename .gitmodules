@@ -1,0 +1,6 @@
+[submodule "tmux/.tmux/plugins/tpm"]
+	path = tmux/.tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm
+[submodule "password-store/.password-store"]
+	path = password-store/.password-store
+	url = git@github.com:mattmurr/.password-store
