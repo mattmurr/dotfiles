@@ -1,0 +1,55 @@
+{
+  "coc.preferences.formatOnSaveFiletypes": [
+    "css",
+    "markdown",
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "json",
+    "graphql",
+    "c",
+    "cpp",
+    "xml",
+    "python",
+    "go",
+    "dart",
+    "html",
+    "htmldjango"
+  ],
+  "diagnostic.refreshOnInsertMode": true,
+  "coc.preferences.rootPatterns": [".vim", ".git", ".hg"],
+  "languageserver": {
+    "ccls": {
+      "command": "ccls",
+      "filetypes": ["c", "cpp", "objc", "objcpp"],
+      "rootPatterns": [".ccls", "compile_commands.json", ".git/", ".hg/"],
+      "initializationOptions": {
+        "cache": {
+          "directory": "/tmp/ccls"
+        },
+        "compilationDatabaseDirectory": "build"
+      }
+    },
+    "zls": {
+      "command": "zls",
+      "filetypes": ["zig"],
+      "initializationOptions": {
+        "enable_snippets": true
+      }
+    },
+    "kotlin": {
+      "command": "kotlin-language-server",
+      "filetypes": ["kotlin"]
+    },
+    "bash": {
+      "command": "bash-language-server",
+      "args": ["start"],
+      "filetypes": ["sh"],
+      "ignoredRootPaths": ["~"]
+    }
+  },
+  "xml.format.splitAttributes": true,
+  "r.lsp.debug": true,
+  "r.lsp.args": []
+}
