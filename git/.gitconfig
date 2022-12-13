@@ -14,3 +14,6 @@
 
 [core]
   excludesfile = "~/.gitignore_global"
+
+[includeIf "gitdir:~/Repos/work/"]
+  path = "~/Repos/work/.gitconfig"
