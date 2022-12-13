@@ -1,0 +1,51 @@
+find_up_() {
+  (
+    while true; do
+      for v in "${@}"; do
+        if [[ -f "${v}" ]]; then
+          echo "${PWD}/${v}"
+          return 0
+        fi
+      done
+
+      if [[ "${PWD}" == / ]] || [[ "${PWD}" == // ]]; then
+        return 1
+      fi
+
+      cd ..
+    done
+  )
+}
+
+read_version_file() {
+  local file
+  file="$(find_up_ "${@}")"
+
+  [[ -z "${file}" ]] && return
+
+  watch_file "${file}"
+  ruby -e "puts ARGF.readline" 2> /dev/null "${file}"
+}
+
+use_nvm() {
+  local version
+  version="${1}"
+
+  [[ "${version}" == --auto ]] && version="$(read_version_file .node-version .nvmrc)"
+  [[ -z "${version}" ]] && return
+
+  if [[ -e ~/.nvm/nvm.sh ]]; then
+    source ~/.nvm/nvm.sh
+    nvm use "${version}"
+  fi
+}
+
+use_jenv() {
+    local version
+    version="${1}"
+
+    [[ -z "${version}" ]] && return
+
+    eval "$(jenv init -)"
+    jenv shell "${version}"
+}
