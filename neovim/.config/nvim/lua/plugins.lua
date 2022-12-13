@@ -39,6 +39,15 @@ return require('packer').startup(function(use)
   }
 
   use {
+    "folke/todo-comments.nvim",
+    requires = "nvim-lua/plenary.nvim",
+    config = function()
+      require("todo-comments").setup {
+      }
+    end
+  }
+
+  use {
     'nvim-treesitter/nvim-treesitter',
     run = ':TSUpdate',
     config = function()
@@ -58,11 +67,12 @@ return require('packer').startup(function(use)
 
   use {
     'neovim/nvim-lspconfig', -- Configurations for Nvim LSP
-    after = { 'telescope.nvim', 'mason.nvim', 'mason-lspconfig.nvim', 'coq_nvim' },
+    after = { 'telescope.nvim', 'mason.nvim', 'mason-lspconfig.nvim', 'cmp-nvim-lsp' },
     config = function()
       require 'mason'.setup()
       require 'mason-lspconfig'.setup {
         automatic_installation = true,
+        ensure_installed = { "jdtls" }
       }
       local servers = {
         'gopls',
@@ -75,13 +85,14 @@ return require('packer').startup(function(use)
         'cssls',
         'html',
         'jsonls',
-        'rnix',
         'ccls',
         'rust_analyzer'
       }
 
       local default_lspopts = {
-        on_attach = require 'common'.on_attach
+        on_attach = require 'common'.on_attach,
+        -- Add additional capabilities supported by nvim-cmp
+        capabilities = require("cmp_nvim_lsp").default_capabilities()
       }
 
       for _, lsp in ipairs(servers) do
@@ -106,7 +117,7 @@ return require('packer').startup(function(use)
             }
           }
         end
-        require 'lspconfig'[lsp].setup(require 'coq'.lsp_ensure_capabilities(lspopts))
+        require 'lspconfig'[lsp].setup(lspopts)
       end
     end
   }
@@ -114,28 +125,64 @@ return require('packer').startup(function(use)
   use {
     'j-hui/fidget.nvim',
     config = function()
-      require"fidget".setup{}
+      require "fidget".setup {}
     end
   }
 
+  use 'hrsh7th/cmp-nvim-lsp'
+  use 'saadparwaiz1/cmp_luasnip'
+  use 'L3MON4D3/LuaSnip'
+  use 'hrsh7th/cmp-nvim-lsp-signature-help'
   use {
-    'ms-jpq/coq_nvim',
-    branch = 'coq',
+    'hrsh7th/nvim-cmp',
+    requires = { 'LuaSnip' },
     config = function()
-      vim.g.coq_settings = { auto_start = true }
-    end
-  }
-  use {
-    'ms-jpq/coq.artifacts',
-    branch = 'artifacts'
-  }
-  use {
-    'ms-jpq/coq.thirdparty',
-    branch = '3p',
-    config = function()
-      require 'coq_3p' {
-        { src = "nvimlua", short_name = "nLUA" }
+
+      -- luasnip setup
+      local luasnip = require 'luasnip'
+
+      -- nvim-cmp setup
+      local cmp = require 'cmp'
+      cmp.setup {
+        snippet = {
+          expand = function(args)
+            luasnip.lsp_expand(args.body)
+          end,
+        },
+        mapping = cmp.mapping.preset.insert({
+          ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<CR>'] = cmp.mapping.confirm {
+            behavior = cmp.ConfirmBehavior.Replace,
+            select = true,
+          },
+          ['<Tab>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            elseif luasnip.expand_or_jumpable() then
+              luasnip.expand_or_jump()
+            else
+              fallback()
+            end
+          end, { 'i', 's' }),
+          ['<S-Tab>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            elseif luasnip.jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
+            end
+          end, { 'i', 's' }),
+        }),
+        sources = {
+          { name = 'nvim_lsp' },
+          { name = 'luasnip' },
+          { name = 'nvim_lsp_signature_help' }
+        },
       }
+
     end
   }
 
