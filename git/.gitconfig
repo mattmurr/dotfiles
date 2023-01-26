@@ -1,0 +1,22 @@
+[user]
+  name = Matthew Murray
+  email = elegant.dusk3770@fastmail.com
+  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFZWac1+fHsX/vTMTdhKlBJU22eS+1pLE4Fr4q4/y/sK
+
+[gpg]
+  format = ssh
+
+[gpg "ssh"]
+  program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+
+[commit]
+  gpgsign = true
+
+[includeIf "gitdir:~/Repos/work/"]
+  path = "~/Repos/work/.gitconfig"
+
+[core]
+  excludesfile = "~/.gitignore_global"
+
+[color]
+  ui = auto

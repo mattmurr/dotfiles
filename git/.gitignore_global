@@ -1,0 +1,15 @@
+.DS_Store
+
+Library/
+Movies/
+Music/
+Pictures/
+Public/
+
+.cache/
+.local/
+
+.gradle/
+.gem/
+.pyenv/
+
