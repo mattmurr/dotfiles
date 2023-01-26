@@ -37,7 +37,7 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-              users.matthew.b.murray = import ./home.nix;
+              users."matthew.b.murray" = import ./home.nix;
             };
           }
         ];
