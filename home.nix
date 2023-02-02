@@ -5,6 +5,10 @@
     pkgs.ripgrep
     pkgs.fd
     pkgs.curlie
+    pkgs.github-cli
+    pkgs._1password
+    pkgs.nodejs
+    pkgs.ltex-ls
   ];
   home.sessionVariables = {
     EDITOR = "nvim";
@@ -26,10 +30,14 @@
     shellAliases = {
       curl = "curlie";
       ls = "ls --color=auto -F";
+      cat = "bat --theme=\$(defaults read -globalDomain AppleInterfaceStyle &> /dev/null && echo default || echo GitHub)";
     };
     initExtra = ''
       bindkey -v
       export KEYTIMEOUT=1
+
+      export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+      export EDITOR="nvim"
 
       export FZF_DEFAULT_COMMAND="fd -t f --hidden --follow --exclude '.git' --ignore-file $HOME/.gitignore_global --color=always"
       export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -84,8 +92,16 @@
       todo-comments-nvim
       nvim-tree-lua
       nerdcommenter
-      zk-nvim
+      vimwiki
       indent-blankline-nvim
+      orgmode
+      nvim-cmp
+      cmp-nvim-lsp
+      cmp-buffer
+      cmp-path
+      cmp-cmdline
+      luasnip
+      cmp_luasnip
     ];
   };
   xdg.configFile.nvim = {
@@ -93,7 +109,8 @@
     recursive = true;
   };
   xdg.configFile."nvim/ftplugin/java.lua".text = ''
-    local capabilities = require 'jdtls'.extendedClientCapabilities
+    local capabilities = require('cmp_nvim_lsp').default_capabilities()
+    local jdtls_capabilities = require 'jdtls'.extendedClientCapabilities
 
     local jdtls_cmd = require('lspconfig')['jdtls'].document_config.default_config.cmd
     jdtls_cmd[1] = "jdt-language-server"
@@ -120,7 +137,7 @@
         bundles = {}
       },
 
-      capabilities = capabilities,
+      capabilities = vim.tbl_deep_extend("keep", {capabilities, jdtls_capabilities}),
       on_attach = function(client, bufnr)
         require 'common'.on_attach(client, bufnr)
         require('jdtls.setup').add_commands()
