@@ -4,7 +4,3 @@ else
   eval "$(/usr/local/bin/brew shellenv)"
 fi
 
-export ZK_NOTEBOOK_DIR="$HOME/Documents/notes"
-
-eval "$(pyenv init --path)"
-
