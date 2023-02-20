@@ -16,6 +16,7 @@ if ! zgenom saved; then
   zgenom ohmyzsh plugins/tmux
   zgenom ohmyzsh plugins/vi-mode
   zgenom ohmyzsh plugins/fzf
+  zgenom ohmyzsh plugins/jenv
 
   #zgenom ohmyzsh themes/cloud
 
