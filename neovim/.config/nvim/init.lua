@@ -45,12 +45,12 @@ require('packer').startup(function(use)
     end
   }
   use {
-    'ellisonleao/gruvbox.nvim',
+    'Mofiqul/vscode.nvim',
     config = function()
       vim.cmd [[
         set background=dark
-        colorscheme gruvbox
       ]]
+      require'vscode'.setup{}
     end
   }
   use 'preservim/nerdcommenter'
@@ -149,7 +149,7 @@ require('packer').startup(function(use)
         "pyright",
         "tsserver",
         "gopls",
-        "sumneko_lua",
+        "lua_ls",
         "solargraph",
         "zls",
         "clangd",
