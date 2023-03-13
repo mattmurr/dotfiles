@@ -33,6 +33,7 @@ require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
   use {
     'nvim-treesitter/nvim-treesitter',
+    run = ':TSUpdate',
     config = function()
       require 'nvim-treesitter.configs'.setup {
         auto_install = true,
@@ -45,9 +46,11 @@ require('packer').startup(function(use)
     end
   }
   use {
-    'Mofiqul/vscode.nvim',
+    'mattmurr/vim-colors-synthetic',
     config = function()
-      require('vscode').setup { transparent = true }
+      vim.cmd[[
+        colorscheme synthetic
+      ]]
     end
   }
   use {

@@ -11,15 +11,17 @@ brew "curlie"
 brew "bat"
 brew "tree-sitter"
 brew "lazygit"
-brew "vercel"
+brew "vercel-cli"
+brew "zk"
 
 brew "jenv"
-brew "temurin8"
-brew "temurin17"
+tap "homebrew/cask-versions"
+cask "temurin8"
+cask "temurin17"
 
 brew "nvm"
 brew "pyenv"
 
 tap "epk/epk"
 
-brew "font-sf-mono-nerd-font"
+cask "font-sf-mono-nerd-font"
