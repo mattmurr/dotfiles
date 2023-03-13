@@ -47,25 +47,30 @@ require('packer').startup(function(use)
   use {
     'Mofiqul/vscode.nvim',
     config = function()
-      vim.cmd [[
-        set background=dark
-      ]]
-      require'vscode'.setup{}
+      require('vscode').setup { transparent = true }
+    end
+  }
+  use {
+    'mickael-menu/zk-nvim',
+    config = function()
+      require 'zk'.setup {
+        picker = 'telescope',
+        lsp = {
+          config = {
+            cmd = { 'zk', 'lsp' },
+            name = 'zk',
+            on_attach = require'common'.on_attach,
+          },
+          auto_attach = {
+            enabled = true,
+            filetypes = { 'markdown' }
+          }
+        }
+      }
     end
   }
   use 'preservim/nerdcommenter'
   use 'tpope/vim-sleuth'
-  use {
-    'junegunn/fzf.vim',
-    requires = { 'junegunn/fzf' },
-    config = function()
-      local opts = { silent = true, noremap = true }
-      vim.keymap.set("n", "<leader>t", "<cmd>Files<cr>", opts)
-      vim.keymap.set("n", "<leader>g", "<cmd>Rg<cr>", opts)
-      vim.keymap.set("n", "<leader>b", "<cmd>Buffers<cr>", opts)
-      vim.keymap.set("n", "<leader>x", "<cmd>Commands<cr>", opts)
-    end
-  }
   use {
     'lewis6991/gitsigns.nvim',
     config = function()
@@ -92,6 +97,133 @@ require('packer').startup(function(use)
       require 'indent_blankline'.setup {
         show_current_context = true,
         show_current_context_start = true
+      }
+    end
+  }
+  use {
+    'nvim-telescope/telescope.nvim', tag = '0.1.1',
+    requires = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      local builtin = require('telescope.builtin')
+      vim.keymap.set('n', '<leader>t', builtin.find_files, {})
+      vim.keymap.set('n', '<leader>g', builtin.live_grep, {})
+      vim.keymap.set('n', '<leader>b', builtin.buffers, {})
+      vim.keymap.set('n', '<leader>h', builtin.help_tags, {})
+      vim.keymap.set('n', '<leader>q', builtin.quickfix, {})
+
+      local actions = require('telescope.actions')
+      require 'telescope'.setup {
+        defaults = {
+          mappings = {
+            i = {
+              ["<esc>"] = actions.close,
+              ["<C-h>"] = actions.select_horizontal,
+              ["<C-u>"] = false
+            }
+          },
+          vimgrep_arguments = {
+            "rg",
+            "--color=never",
+            "--no-heading",
+            "--with-filename",
+            "--line-number",
+            "--column",
+            "--smart-case",
+            "--trim" -- add this value
+          }
+        },
+        pickers = {
+          find_files = {
+            find_command = { "fd", "--type", "f", "--strip-cwd-prefix" },
+            path_display = { "shorten" }
+          },
+        }
+      }
+
+      local function multiopen(prompt_bufnr, method)
+        local edit_file_cmd_map = {
+          vertical = "vsplit",
+          horizontal = "split",
+          tab = "tabedit",
+          default = "edit",
+        }
+        local edit_buf_cmd_map = {
+          vertical = "vert sbuffer",
+          horizontal = "sbuffer",
+          tab = "tab sbuffer",
+          default = "buffer",
+        }
+        local picker = action_state.get_current_picker(prompt_bufnr)
+        local multi_selection = picker:get_multi_selection()
+
+        if #multi_selection > 1 then
+          require("telescope.pickers").on_close_prompt(prompt_bufnr)
+          pcall(vim.api.nvim_set_current_win, picker.original_win_id)
+
+          for i, entry in ipairs(multi_selection) do
+            local filename, row, col
+
+            if entry.path or entry.filename then
+              filename = entry.path or entry.filename
+
+              row = entry.row or entry.lnum
+              col = vim.F.if_nil(entry.col, 1)
+            elseif not entry.bufnr then
+              local value = entry.value
+              if not value then
+                return
+              end
+
+              if type(value) == "table" then
+                value = entry.display
+              end
+
+              local sections = vim.split(value, ":")
+
+              filename = sections[1]
+              row = tonumber(sections[2])
+              col = tonumber(sections[3])
+            end
+
+            local entry_bufnr = entry.bufnr
+
+            if entry_bufnr then
+              if not vim.api.nvim_buf_get_option(entry_bufnr, "buflisted") then
+                vim.api.nvim_buf_set_option(entry_bufnr, "buflisted", true)
+              end
+              local command = i == 1 and "buffer" or edit_buf_cmd_map[method]
+              pcall(vim.cmd, string.format("%s %s", command, vim.api.nvim_buf_get_name(entry_bufnr)))
+            else
+              local command = i == 1 and "edit" or edit_file_cmd_map[method]
+              if vim.api.nvim_buf_get_name(0) ~= filename or command ~= "edit" then
+                filename = require("plenary.path"):new(vim.fn.fnameescape(filename)):normalize(vim.loop.cwd())
+                pcall(vim.cmd, string.format("%s %s", command, filename))
+              end
+            end
+
+            if row and col then
+              pcall(vim.api.nvim_win_set_cursor, 0, { row, col })
+            end
+          end
+        else
+          actions["select_" .. method](prompt_bufnr)
+        end
+      end
+    end
+  }
+  use {
+    'akinsho/bufferline.nvim', tag = "v3.*",
+    requires = 'nvim-tree/nvim-web-devicons',
+    config = function()
+      vim.opt.termguicolors = true
+      require("bufferline").setup {
+        options = {
+          diagnostics = "nvim_lsp",
+          diagnostics_indicator = function(count, level, diagnostics_dict, context)
+            local icon = level:match("error") and " " or " "
+            return " " .. icon .. count
+          end
+        }
       }
     end
   }
@@ -182,7 +314,7 @@ require('packer').startup(function(use)
               language = "en-GB",
             },
           }
-        elseif lsp == "sumneko_lua" then
+        elseif lsp == "lua_ls" then
           opts.settings = {
             Lua = {
               diagnostics = {

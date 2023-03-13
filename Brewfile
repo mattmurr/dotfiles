@@ -13,5 +13,13 @@ brew "tree-sitter"
 brew "lazygit"
 brew "vercel"
 
+brew "jenv"
 brew "temurin8"
 brew "temurin17"
+
+brew "nvm"
+brew "pyenv"
+
+tap "epk/epk"
+
+brew "font-sf-mono-nerd-font"

@@ -17,8 +17,10 @@ if ! zgenom saved; then
   zgenom ohmyzsh plugins/vi-mode
   zgenom ohmyzsh plugins/fzf
   zgenom ohmyzsh plugins/jenv
+  zgenom ohmyzsh plugins/nvm
+  zgenom ohmyzsh plugins/pyenv
 
-  #zgenom ohmyzsh themes/cloud
+  zgenom ohmyzsh themes/robbyrussell
 
   # generate the init script from plugins above
   zgenom save
@@ -37,7 +39,7 @@ export EDITOR="nvim"
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 alias cat="bat"
 
-export ZK_NOTEBOOK_DIR="$HOME/notes"
+export ZK_NOTEBOOK_DIR="$HOME/Sync/notes"
 
 export FZF_DEFAULT_COMMAND="fd -t f --hidden --follow --exclude '.git' --ignore-file $HOME/.gitignore_global --color=always"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
