@@ -46,11 +46,9 @@ require('packer').startup(function(use)
     end
   }
   use {
-    'mattmurr/vim-colors-synthetic',
+    'folke/tokyonight.nvim',
     config = function()
-      vim.cmd[[
-        colorscheme synthetic
-      ]]
+      vim.cmd [[colorscheme tokyonight-night]]
     end
   }
   use {

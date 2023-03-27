@@ -25,3 +25,10 @@ brew "pyenv"
 tap "epk/epk"
 
 cask "font-sf-mono-nerd-font"
+
+brew "colima"
+brew "docker-credential-helper"
+brew "docker-compose"
+
+tap "spring-io/tap"
+brew "spring-boot"
