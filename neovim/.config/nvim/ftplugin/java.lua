@@ -26,7 +26,11 @@ local config = {
     '-data', workspace_dir
   },
   root_dir = vim.fs.dirname(vim.fs.find({ '.gradlew', '.git', 'mvnw' }, { upward = true })[1]),
-
+  init_options = {
+    extendedClientCapabilities = {
+      progressReportProvider = false,
+    },
+  },
   settings = {
     java = {
       signatureHelp = { enabled = true };

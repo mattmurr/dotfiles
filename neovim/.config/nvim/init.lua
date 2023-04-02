@@ -52,20 +52,12 @@ require('packer').startup(function(use)
     end
   }
   use {
-    'mickael-menu/zk-nvim',
+    'nvim-lualine/lualine.nvim',
+    requires = { 'nvim-tree/nvim-web-devicons', opt = true },
     config = function()
-      require 'zk'.setup {
-        picker = 'telescope',
-        lsp = {
-          config = {
-            cmd = { 'zk', 'lsp' },
-            name = 'zk',
-            on_attach = require'common'.on_attach,
-          },
-          auto_attach = {
-            enabled = true,
-            filetypes = { 'markdown' }
-          }
+      require('lualine').setup {
+        options = {
+          theme = 'tokyonight'
         }
       }
     end
@@ -102,6 +94,14 @@ require('packer').startup(function(use)
     end
   }
   use {
+    'ThePrimeagen/harpoon',
+    config = function()
+      require("harpoon").setup {}
+      vim.keymap.set('n', 'mff', require('harpoon.mark').add_file, {})
+      vim.keymap.set('n', 'mfu', require('harpoon.mark').rm_file, {})
+    end
+  }
+  use {
     'nvim-telescope/telescope.nvim', tag = '0.1.1',
     requires = { 'nvim-lua/plenary.nvim' },
     config = function()
@@ -111,6 +111,7 @@ require('packer').startup(function(use)
       vim.keymap.set('n', '<leader>b', builtin.buffers, {})
       vim.keymap.set('n', '<leader>h', builtin.help_tags, {})
       vim.keymap.set('n', '<leader>q', builtin.quickfix, {})
+      vim.keymap.set('n', '<leader>m', ':Telescope harpoon marks<cr>', {})
 
       local actions = require('telescope.actions')
       require 'telescope'.setup {
@@ -118,7 +119,7 @@ require('packer').startup(function(use)
           mappings = {
             i = {
               ["<esc>"] = actions.close,
-              ["<C-h>"] = actions.select_horizontal,
+              ["<C-h>"] = actions.select_vertical,
               ["<C-u>"] = false
             }
           },
@@ -130,86 +131,17 @@ require('packer').startup(function(use)
             "--line-number",
             "--column",
             "--smart-case",
-            "--trim" -- add this value
-          }
+            "--trim"
+          },
+          path_display = { "truncate" }
         },
         pickers = {
           find_files = {
-            find_command = { "fd", "--type", "f", "--strip-cwd-prefix" },
-            path_display = { "shorten" }
+            find_command = { "fd", "--type", "f", "--strip-cwd-prefix" }
           },
         }
       }
-
-      local function multiopen(prompt_bufnr, method)
-        local edit_file_cmd_map = {
-          vertical = "vsplit",
-          horizontal = "split",
-          tab = "tabedit",
-          default = "edit",
-        }
-        local edit_buf_cmd_map = {
-          vertical = "vert sbuffer",
-          horizontal = "sbuffer",
-          tab = "tab sbuffer",
-          default = "buffer",
-        }
-        local picker = action_state.get_current_picker(prompt_bufnr)
-        local multi_selection = picker:get_multi_selection()
-
-        if #multi_selection > 1 then
-          require("telescope.pickers").on_close_prompt(prompt_bufnr)
-          pcall(vim.api.nvim_set_current_win, picker.original_win_id)
-
-          for i, entry in ipairs(multi_selection) do
-            local filename, row, col
-
-            if entry.path or entry.filename then
-              filename = entry.path or entry.filename
-
-              row = entry.row or entry.lnum
-              col = vim.F.if_nil(entry.col, 1)
-            elseif not entry.bufnr then
-              local value = entry.value
-              if not value then
-                return
-              end
-
-              if type(value) == "table" then
-                value = entry.display
-              end
-
-              local sections = vim.split(value, ":")
-
-              filename = sections[1]
-              row = tonumber(sections[2])
-              col = tonumber(sections[3])
-            end
-
-            local entry_bufnr = entry.bufnr
-
-            if entry_bufnr then
-              if not vim.api.nvim_buf_get_option(entry_bufnr, "buflisted") then
-                vim.api.nvim_buf_set_option(entry_bufnr, "buflisted", true)
-              end
-              local command = i == 1 and "buffer" or edit_buf_cmd_map[method]
-              pcall(vim.cmd, string.format("%s %s", command, vim.api.nvim_buf_get_name(entry_bufnr)))
-            else
-              local command = i == 1 and "edit" or edit_file_cmd_map[method]
-              if vim.api.nvim_buf_get_name(0) ~= filename or command ~= "edit" then
-                filename = require("plenary.path"):new(vim.fn.fnameescape(filename)):normalize(vim.loop.cwd())
-                pcall(vim.cmd, string.format("%s %s", command, filename))
-              end
-            end
-
-            if row and col then
-              pcall(vim.api.nvim_win_set_cursor, 0, { row, col })
-            end
-          end
-        else
-          actions["select_" .. method](prompt_bufnr)
-        end
-      end
+      require("telescope").load_extension('harpoon')
     end
   }
   use {
