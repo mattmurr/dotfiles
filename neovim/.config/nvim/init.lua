@@ -2,19 +2,19 @@ vim.g.mapleader = " "
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.cursorline = true
+
 vim.o.tabstop = 2
 vim.o.shiftwidth = 2
 vim.o.softtabstop = 2
 vim.o.expandtab = true
+
 vim.o.ignorecase = true
 vim.o.incsearch = false
 vim.o.hlsearch = true
 vim.o.updatetime = 300
 vim.o.incsearch = false
 vim.wo.signcolumn = 'yes'
-vim.cmd [[
-set mouse=
-]]
+vim.cmd [[set mouse=]]
 
 local ensure_packer = function()
   local fn = vim.fn
@@ -62,6 +62,7 @@ require('packer').startup(function(use)
       }
     end
   }
+  use 'ekickx/clipboard-image.nvim'
   use 'preservim/nerdcommenter'
   use 'tpope/vim-sleuth'
   use {
@@ -145,20 +146,8 @@ require('packer').startup(function(use)
     end
   }
   use {
-    'akinsho/bufferline.nvim', tag = "v3.*",
-    requires = 'nvim-tree/nvim-web-devicons',
-    config = function()
-      vim.opt.termguicolors = true
-      require("bufferline").setup {
-        options = {
-          diagnostics = "nvim_lsp",
-          diagnostics_indicator = function(count, level, diagnostics_dict, context)
-            local icon = level:match("error") and " " or " "
-            return " " .. icon .. count
-          end
-        }
-      }
-    end
+    "SmiteshP/nvim-navic",
+    requires = "neovim/nvim-lspconfig"
   }
   use {
     'nvim-tree/nvim-tree.lua',
@@ -194,7 +183,7 @@ require('packer').startup(function(use)
       nls.setup {
         sources = {
           nls.builtins.formatting.prettierd,
-          nls.builtins.diagnostics.markdownlint,
+          nls.builtins.diagnostics.markdownlint
         }
       }
     end
@@ -224,7 +213,11 @@ require('packer').startup(function(use)
         "astro",
         'tailwindcss',
         'prismals',
-        'rnix'
+        'rnix',
+        'lemminx',
+        'jsonls',
+        'dockerls',
+        'docker_compose_language_service'
       }
       -- Use a loop to conveniently call 'setup' on multiple servers and
       -- map buffer local keybindings when the language server attaches
@@ -288,14 +281,30 @@ require('packer').startup(function(use)
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-cmdline',
       'L3MON4D3/LuaSnip',
-      'saadparwaiz1/cmp_luasnip'
+      'saadparwaiz1/cmp_luasnip',
+      'rafamadriz/friendly-snippets',
+      'onsails/lspkind.nvim'
     },
     config = function()
       vim.cmd [[set completeopt=menu,menuone,noselect]]
 
       local cmp = require 'cmp'
+      local lspkind = require 'lspkind'
 
       cmp.setup({
+        formatting = {
+          format = lspkind.cmp_format {
+            maxwidth = 64,
+            mode = "symbol_text",
+            menu = ({
+              buffer = "[Buffer]",
+              nvim_lsp = "[LSP]",
+              luasnip = "[LuaSnip]",
+              nvim_lua = "[Lua]",
+              latex_symbols = "[Latex]",
+            })
+          }
+        },
         snippet = {
           expand = function(args)
             require('luasnip').lsp_expand(args.body)
@@ -310,7 +319,7 @@ require('packer').startup(function(use)
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
           ['<C-Space>'] = cmp.mapping.complete(),
           ['<C-e>'] = cmp.mapping.abort(),
-          ['<CR>'] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+          ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
         }),
         sources = cmp.config.sources({
           { name = 'nvim_lsp' },

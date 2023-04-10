@@ -26,11 +26,6 @@ local config = {
     '-data', workspace_dir
   },
   root_dir = vim.fs.dirname(vim.fs.find({ '.gradlew', '.git', 'mvnw' }, { upward = true })[1]),
-  init_options = {
-    extendedClientCapabilities = {
-      progressReportProvider = false,
-    },
-  },
   settings = {
     java = {
       signatureHelp = { enabled = true };
@@ -46,6 +41,12 @@ local config = {
             path = vim.env.HOME .. '/.jenv/versions/1.8',
           }
         }
+      },
+      format = {
+        settings = {
+          url = 'https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml',
+          profile = 'GoogleStyle'
+        }
       }
     },
   },
@@ -54,16 +55,9 @@ local config = {
   on_attach = function(client, bufnr)
     require 'common'.on_attach(client, bufnr)
     require('jdtls.setup').add_commands()
-    require('jdtls').setup_dap({ hotcodereplace = 'auto' })
   end
 }
-
-local bundles = {
-  vim.fn.glob(mason .. '/packages/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar', 1)
-}
-vim.list_extend(bundles, vim.split(vim.fn.glob(mason .. '/packages/java-test/extension/server/*.jar', 1), "\n"))
-config['init_options'] = {
-  bundles = bundles;
-}
+-- Disable echo for loading, we use fidget.nvim
+config.handlers = {['language/status'] = function() end}
 
 require('jdtls').start_or_attach(config)
