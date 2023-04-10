@@ -62,7 +62,6 @@ require('packer').startup(function(use)
       }
     end
   }
-  use 'ekickx/clipboard-image.nvim'
   use 'preservim/nerdcommenter'
   use 'tpope/vim-sleuth'
   use {
