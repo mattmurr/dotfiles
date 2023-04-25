@@ -46,20 +46,17 @@ require('packer').startup(function(use)
     end
   }
   use {
-    'folke/tokyonight.nvim',
+    "ellisonleao/gruvbox.nvim",
     config = function()
-      vim.cmd [[colorscheme tokyonight-night]]
+      vim.o.background = "dark"
+      vim.cmd [[colorscheme gruvbox]]
     end
   }
   use {
     'nvim-lualine/lualine.nvim',
     requires = { 'nvim-tree/nvim-web-devicons', opt = true },
     config = function()
-      require('lualine').setup {
-        options = {
-          theme = 'tokyonight'
-        }
-      }
+      require('lualine').setup {}
     end
   }
   use 'preservim/nerdcommenter'
@@ -154,7 +151,6 @@ require('packer').startup(function(use)
       vim.g.loaded_netrw = 1
       vim.g.loaded_netrwPlugin = 1
       require 'nvim-tree'.setup {
-        open_on_setup = false,
         view = {
           adaptive_size = true
         },

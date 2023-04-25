@@ -24,7 +24,9 @@ brew "pyenv"
 
 tap "epk/epk"
 
+tap "homebrew/cask-fonts"
 cask "font-sf-mono-nerd-font"
+cask "font-iosevka"
 
 brew "colima"
 brew "docker-credential-helper"

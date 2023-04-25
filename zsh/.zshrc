@@ -45,4 +45,6 @@ export FZF_ALT_C_COMMAND="fd -t d --hidden --follow --exclude '.git' --ignore-fi
 export FZF_DEFAULT_OPTS="--height 100% --layout=reverse --border --ansi"
 export FZF_CTRL_T_OPTS="$FZF_DEFAULT_OPTS --preview 'bat --style=numbers --color=always --line-range :500 {}'"
 
+export BAT_THEME="gruvbox-dark"
+
 eval "$(direnv hook zsh)"
