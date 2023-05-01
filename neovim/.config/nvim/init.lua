@@ -46,10 +46,10 @@ require('packer').startup(function(use)
     end
   }
   use {
-    "ellisonleao/gruvbox.nvim",
+    "sainnhe/gruvbox-material",
     config = function()
       vim.o.background = "dark"
-      vim.cmd [[colorscheme gruvbox]]
+      vim.cmd [[colorscheme gruvbox-material]]
     end
   }
   use {
