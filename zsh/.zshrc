@@ -1,32 +1,23 @@
-export ZSH_TMUX_AUTOSTART=true
-export VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
-export VI_MODE_SET_CURSOR=true
+export ZSH="$HOME/.oh-my-zsh"
 
-source "$HOME/.zgenom/zgenom.zsh"
+ZSH_THEME="robbyrussell"
 
-zgenom autoupdate
+ZSH_TMUX_AUTOSTART=true
+VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
+VI_MODE_SET_CURSOR=true
 
-if ! zgenom saved; then
+plugins=(
+  git
+  direnv
+  tmux
+  vi-mod
+  fzf
+  jenv
+  nvm
+  pyenv
+)
 
-  # specify plugins here
-  zgenom ohmyzsh
-
-  zgenom ohmyzsh plugins/git
-  zgenom ohmyzsh plugins/direnv
-  zgenom ohmyzsh plugins/tmux
-  zgenom ohmyzsh plugins/vi-mode
-  zgenom ohmyzsh plugins/fzf
-  zgenom ohmyzsh plugins/jenv
-  zgenom ohmyzsh plugins/nvm
-  zgenom ohmyzsh plugins/pyenv
-
-  zgenom ohmyzsh themes/robbyrussell
-
-  # generate the init script from plugins above
-  zgenom save
-
-  zgenom compile "$HOME/.zshrc"
-fi
+source $ZSH/oh-my-zsh.sh
 
 alias ls='lsd'
 alias ll='ls -l'

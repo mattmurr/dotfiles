@@ -52,13 +52,6 @@ require('packer').startup(function(use)
       vim.cmd [[colorscheme gruvbox-material]]
     end
   }
-  use {
-    'nvim-lualine/lualine.nvim',
-    requires = { 'nvim-tree/nvim-web-devicons', opt = true },
-    config = function()
-      require('lualine').setup {}
-    end
-  }
   use 'preservim/nerdcommenter'
   use 'tpope/vim-sleuth'
   use {
