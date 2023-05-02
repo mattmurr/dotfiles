@@ -10,7 +10,7 @@ plugins=(
   git
   direnv
   tmux
-  vi-mod
+  vi-mode
   fzf
   jenv
   nvm
