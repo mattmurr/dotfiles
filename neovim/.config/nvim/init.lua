@@ -1,3 +1,16 @@
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
 vim.g.mapleader = " "
 vim.o.number = true
 vim.o.relativenumber = true
@@ -16,65 +29,112 @@ vim.o.incsearch = false
 vim.wo.signcolumn = 'yes'
 vim.cmd [[set mouse=]]
 
-local ensure_packer = function()
-  local fn = vim.fn
-  local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
-  if fn.empty(fn.glob(install_path)) > 0 then
-    fn.system({ 'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path })
-    vim.cmd [[packadd packer.nvim]]
-    return true
-  end
-  return false
-end
+local opts = { silent = true, noremap = true }
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
+vim.keymap.set('n', '<space>de', vim.diagnostic.setloclist, opts)
+vim.keymap.set('n', '<space>we', vim.diagnostic.setqflist, opts)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 
-local packer_bootstrap = ensure_packer()
-
-require('packer').startup(function(use)
-  use 'wbthomason/packer.nvim'
-  use {
+require('lazy').setup({
+  { "folke/neodev.nvim", opts = {} },
+  {
     'nvim-treesitter/nvim-treesitter',
-    run = ':TSUpdate',
+    build = ':TSUpdate',
     config = function()
-      require 'nvim-treesitter.configs'.setup {
-        auto_install = true,
-        highlight = {
-          enable = true,
-          additional_vim_regex_highlighting = false,
-          disable = { "help" }
-        }
+      require 'nvim-treesitter.configs'.setup {}
+    end
+  },
+  {
+    "folke/flash.nvim",
+    event = "VeryLazy",
+    ---@type Flash.Config
+    opts = {},
+    keys = {
+      {
+        "s",
+        mode = { "n", "x", "o" },
+        function()
+          -- default options: exact mode, multi window, all directions, with a backdrop
+          require("flash").jump()
+        end,
+        desc = "Flash",
+      },
+      {
+        "S",
+        mode = { "n", "o", "x" },
+        function()
+          require("flash").treesitter()
+        end,
+        desc = "Flash Treesitter",
+      },
+      {
+        "r",
+        mode = "o",
+        function()
+          require("flash").remote()
+        end,
+        desc = "Remote Flash",
+      },
+    },
+  },
+  {
+    "folke/tokyonight.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {},
+    config = function()
+      vim.cmd [[colorscheme tokyonight-night]]
+    end
+  },
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = 'nvim-tree/nvim-web-devicons',
+    config = function()
+      require('lualine').setup {
+          options = {
+            theme = 'tokyonight'
+          }
       }
     end
-  }
-  use {
-    "sainnhe/gruvbox-material",
+  },
+  {
+    "utilyre/barbecue.nvim",
+    name = "barbecue",
+    version = "*",
+    dependencies = {
+      "SmiteshP/nvim-navic",
+      "nvim-tree/nvim-web-devicons",
+    },
     config = function()
-      vim.o.background = "dark"
-      vim.cmd [[colorscheme gruvbox-material]]
+      require('barbecue').setup {
+        theme = 'tokyonight',
+      }
     end
-  }
-  use 'preservim/nerdcommenter'
-  use 'tpope/vim-sleuth'
-  use {
+  },
+  'preservim/nerdcommenter',
+  'tpope/vim-sleuth',
+  {
     'lewis6991/gitsigns.nvim',
     config = function()
       require 'gitsigns'.setup {
         current_line_blame = false
       }
     end
-  }
-  use {
+  },
+  {
     'folke/todo-comments.nvim',
     config = function()
       require 'todo-comments'.setup {}
     end
-  }
-  use {
-    'j-hui/fidget.nvim',
+  },
+  {
+    'j-hui/fidget.nvim', tag = 'legacy',
     config = function()
       require 'fidget'.setup {}
     end
-  }
-  use {
+  },
+  {
     'lukas-reineke/indent-blankline.nvim',
     config = function()
       require 'indent_blankline'.setup {
@@ -82,18 +142,10 @@ require('packer').startup(function(use)
         show_current_context_start = true
       }
     end
-  }
-  use {
-    'ThePrimeagen/harpoon',
-    config = function()
-      require("harpoon").setup {}
-      vim.keymap.set('n', 'mff', require('harpoon.mark').add_file, {})
-      vim.keymap.set('n', 'mfu', require('harpoon.mark').rm_file, {})
-    end
-  }
-  use {
+  },
+  {
     'nvim-telescope/telescope.nvim', tag = '0.1.1',
-    requires = { 'nvim-lua/plenary.nvim' },
+    dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
       local builtin = require('telescope.builtin')
       vim.keymap.set('n', '<leader>t', builtin.find_files, {})
@@ -101,7 +153,6 @@ require('packer').startup(function(use)
       vim.keymap.set('n', '<leader>b', builtin.buffers, {})
       vim.keymap.set('n', '<leader>h', builtin.help_tags, {})
       vim.keymap.set('n', '<leader>q', builtin.quickfix, {})
-      vim.keymap.set('n', '<leader>m', ':Telescope harpoon marks<cr>', {})
 
       local actions = require('telescope.actions')
       require 'telescope'.setup {
@@ -131,14 +182,10 @@ require('packer').startup(function(use)
           },
         }
       }
-      require("telescope").load_extension('harpoon')
-    end
-  }
-  use {
-    "SmiteshP/nvim-navic",
-    requires = "neovim/nvim-lspconfig"
-  }
-  use {
+    end,
+    event = { "VeryLazy" },
+  },
+  {
     'nvim-tree/nvim-tree.lua',
     config = function()
       vim.g.loaded_netrw = 1
@@ -156,16 +203,16 @@ require('packer').startup(function(use)
       }
 
     end
-  }
-  use {
+  },
+  {
     'ray-x/lsp_signature.nvim',
     config = function()
       require 'lsp_signature'.setup { zindex = 50 }
     end
-  }
-  use {
+  },
+  {
     'jose-elias-alvarez/null-ls.nvim',
-    requires = { 'nvim-lua/plenary.nvim' },
+    dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
       local nls = require 'null-ls'
       nls.setup {
@@ -175,10 +222,10 @@ require('packer').startup(function(use)
         }
       }
     end
-  }
-  use {
+  },
+  {
     "neovim/nvim-lspconfig",
-    requires = {
+    dependencies = {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
     },
@@ -205,24 +252,18 @@ require('packer').startup(function(use)
         'lemminx',
         'jsonls',
         'dockerls',
-        'docker_compose_language_service'
+        'docker_compose_language_service',
+        'r_language_server'
       }
       -- Use a loop to conveniently call 'setup' on multiple servers and
       -- map buffer local keybindings when the language server attaches
       for _, lsp in ipairs(servers) do
         local opts = {
-          on_attach = require('common').on_attach,
           flags = {
             debounce_text_changes = 150,
           },
         }
-        if lsp == "tsserver" then
-          opts.on_attach = function(client, bufnr)
-            client.server_capabilities.document_formatting = false
-            client.server_capabilities.document_Range_formatting = false
-            require('common').on_attach(client, bufnr)
-          end
-        elseif lsp == "ltex" then
+        if lsp == "ltex" then
           opts.settings = {
             ltex = {
               language = "en-GB",
@@ -257,13 +298,39 @@ require('packer').startup(function(use)
         nvim_lsp[lsp].setup(opts)
       end
 
+      vim.api.nvim_create_autocmd('LspAttach', {
+        group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+        callback = function(ev)
+          -- Enable completion triggered by <c-x><c-o>
+          vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+          -- Buffer local mappings.
+          -- See `:help vim.lsp.*` for documentation on any of the below functions
+          local opts = { buffer = ev.buf }
+          local builtin = require 'telescope.builtin'
+          vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+          vim.keymap.set('n', 'gd', builtin.lsp_definitions, opts)
+          vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+          vim.keymap.set('n', 'gi', builtin.lsp_implementations, opts)
+          vim.keymap.set('n', 'gt', builtin.lsp_type_definitions, opts)
+          vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+          vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+          vim.keymap.set('n', 'gr', builtin.lsp_references, opts)
+          vim.keymap.set('n', '<space>f', function()
+            vim.lsp.buf.format { async = true }
+          end, opts)
+          vim.keymap.set('n', '<leader>we', builtin.diagnostics, opts)
+          vim.keymap.set('n', '<leader>de', function() builtin.diagnostics({ bufnr = 0 }) end, opts)
+        end,
+      })
+
     end
-  }
-  use 'mfussenegger/nvim-jdtls'
-  use 'mfussenegger/nvim-dap'
-  use {
+  },
+  'mfussenegger/nvim-jdtls',
+  'mfussenegger/nvim-dap',
+  {
     'hrsh7th/nvim-cmp',
-    requires = {
+    dependencies = {
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-buffer',
       'hrsh7th/cmp-path',
@@ -337,24 +404,4 @@ require('packer').startup(function(use)
 
     end
   }
-
-  -- Automatically set up your configuration after cloning packer.nvim
-  -- Put this at the end after all plugins
-  if packer_bootstrap then
-    require('packer').sync()
-  end
-end)
-
-local opts = { silent = true, noremap = true }
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
-vim.keymap.set('n', '<space>de', vim.diagnostic.setloclist, opts)
-vim.keymap.set('n', '<space>we', vim.diagnostic.setqflist, opts)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-
-vim.cmd([[
-  augroup packer_user_config
-    autocmd!
-    autocmd BufWritePost init.lua source <afile> | PackerCompile
-  augroup end
-]])
+})

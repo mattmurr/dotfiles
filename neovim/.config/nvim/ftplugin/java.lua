@@ -51,13 +51,10 @@ local config = {
     },
   },
 
-  capabilities = vim.tbl_deep_extend("keep", capabilities, jdtls_capabilities),
-  on_attach = function(client, bufnr)
-    require 'common'.on_attach(client, bufnr)
-    require('jdtls.setup').add_commands()
-  end
+  capabilities = vim.tbl_deep_extend("keep", capabilities, jdtls_capabilities)
 }
 -- Disable echo for loading, we use fidget.nvim
 config.handlers = {['language/status'] = function() end}
 
 require('jdtls').start_or_attach(config)
+require('jdtls.setup').add_commands()
