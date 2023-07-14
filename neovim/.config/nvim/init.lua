@@ -79,22 +79,17 @@ require('lazy').setup({
     },
   },
   {
-    "folke/tokyonight.nvim",
-    lazy = false,
-    priority = 1000,
-    opts = {},
+    "RRethy/nvim-base16",
     config = function()
-      vim.cmd [[colorscheme tokyonight-night]]
-    end
+      vim.cmd('colorscheme base16-da-one-black')
+    end,
   },
   {
     'nvim-lualine/lualine.nvim',
-    dependencies = 'nvim-tree/nvim-web-devicons',
+    dependences = { 'nvim-tree/nvim-web-devicons' },
     config = function()
       require('lualine').setup {
-          options = {
-            theme = 'tokyonight'
-          }
+        theme = 'base16'
       }
     end
   },
@@ -118,7 +113,7 @@ require('lazy').setup({
     'lewis6991/gitsigns.nvim',
     config = function()
       require 'gitsigns'.setup {
-        current_line_blame = false
+        current_line_blame = true
       }
     end
   },
@@ -211,19 +206,6 @@ require('lazy').setup({
     end
   },
   {
-    'jose-elias-alvarez/null-ls.nvim',
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    config = function()
-      local nls = require 'null-ls'
-      nls.setup {
-        sources = {
-          nls.builtins.formatting.prettierd,
-          nls.builtins.diagnostics.markdownlint
-        }
-      }
-    end
-  },
-  {
     "neovim/nvim-lspconfig",
     dependencies = {
       "williamboman/mason.nvim",
@@ -253,7 +235,8 @@ require('lazy').setup({
         'jsonls',
         'dockerls',
         'docker_compose_language_service',
-        'r_language_server'
+        'r_language_server',
+        'marksman'
       }
       -- Use a loop to conveniently call 'setup' on multiple servers and
       -- map buffer local keybindings when the language server attaches
