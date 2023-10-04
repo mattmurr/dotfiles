@@ -52,10 +52,42 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"rebelot/heirline.nvim",
+		"nvim-lualine/lualine.nvim",
 		event = "UiEnter",
+		dependencies = {
+			"nvim-tree/nvim-web-devicons",
+		},
 		config = function()
-			require("heirline").setup({})
+			require("lualine").setup({
+				sections = {
+					lualine_x = { "aerial" },
+
+					-- Or you can customize it
+					lualine_y = {
+						{
+							"aerial",
+							-- The separator to be used to separate symbols in status line.
+							sep = " ) ",
+
+							-- The number of symbols to render top-down. In order to render only 'N' last
+							-- symbols, negative numbers may be supplied. For instance, 'depth = -1' can
+							-- be used in order to render only current symbol.
+							depth = nil,
+
+							-- When 'dense' mode is on, icons are not rendered near their symbols. Only
+							-- a single icon that represents the kind of current symbol is rendered at
+							-- the beginning of status line.
+							dense = false,
+
+							-- The separator to be used to separate symbols in dense mode.
+							dense_sep = ".",
+
+							-- Color the symbol icons.
+							colored = true,
+						},
+					},
+				},
+			})
 		end,
 	},
 	{
@@ -112,29 +144,6 @@ require("lazy").setup({
 		},
 	},
 	{
-		"mickael-menu/zk-nvim",
-		config = function()
-			require("zk").setup({
-				-- can be "telescope", "fzf" or "select" (`vim.ui.select`)
-				-- it's recommended to use "telescope" or "fzf"
-				picker = "telescope",
-
-				lsp = {
-					-- `config` is passed to `vim.lsp.start_client(config)`
-					config = {
-						cmd = { "zk", "lsp" },
-						name = "zk",
-					},
-					-- automatically attach buffers in a zk notebook that match the given filetypes
-					auto_attach = {
-						enabled = true,
-						filetypes = { "markdown" },
-					},
-				},
-			})
-		end,
-	},
-	{
 		"nvim-lualine/lualine.nvim",
 		dependences = { "nvim-tree/nvim-web-devicons" },
 		config = function()
@@ -163,7 +172,7 @@ require("lazy").setup({
 		"lewis6991/gitsigns.nvim",
 		config = function()
 			require("gitsigns").setup({
-				current_line_blame = true,
+				current_line_blame = false,
 			})
 		end,
 	},
@@ -182,55 +191,43 @@ require("lazy").setup({
 	},
 	{
 		"lukas-reineke/indent-blankline.nvim",
+		main = "ibl",
+		opts = {},
 		config = function()
-			require("indent_blankline").setup({
-				show_current_context = true,
-				show_current_context_start = true,
-			})
+			require("ibl").setup({})
 		end,
 	},
 	{
-		"nvim-telescope/telescope.nvim",
-		tag = "0.1.1",
-		dependencies = { "nvim-lua/plenary.nvim" },
+		"junegunn/fzf.vim",
+		dependencies = {
+			"junegunn/fzf",
+		},
 		config = function()
-			local builtin = require("telescope.builtin")
-			vim.keymap.set("n", "<leader>t", builtin.find_files, {})
-			vim.keymap.set("n", "<leader>g", builtin.live_grep, {})
-			vim.keymap.set("n", "<leader>b", builtin.buffers, {})
-			vim.keymap.set("n", "<leader>h", builtin.help_tags, {})
-			vim.keymap.set("n", "<leader>q", builtin.quickfix, {})
-
-			local actions = require("telescope.actions")
-			require("telescope").setup({
-				defaults = {
-					mappings = {
-						i = {
-							["<esc>"] = actions.close,
-							["<C-h>"] = actions.select_vertical,
-							["<C-u>"] = false,
-						},
-					},
-					vimgrep_arguments = {
-						"rg",
-						"--color=never",
-						"--no-heading",
-						"--with-filename",
-						"--line-number",
-						"--column",
-						"--smart-case",
-						"--trim",
-					},
-					path_display = { "truncate" },
-				},
-				pickers = {
-					find_files = {
-						find_command = { "fd", "--type", "f", "--strip-cwd-prefix" },
-					},
-				},
-			})
+			vim.keymap.set("n", "<leader>t", ":Files<cr>", opts)
+			vim.keymap.set("n", "<leader>g", ":Rg<cr>", opts)
+			vim.keymap.set("n", "<leader>b", ":Buffers<cr>", opts)
 		end,
-		event = { "VeryLazy" },
+	},
+	{
+		"stevearc/aerial.nvim",
+		opts = {},
+		-- Optional dependencies
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter",
+			"nvim-tree/nvim-web-devicons",
+		},
+		config = function()
+			require("aerial").setup({
+				-- optionally use on_attach to set keymaps when aerial has attached to a buffer
+				on_attach = function(bufnr)
+					-- Jump forwards/backwards with '{' and '}'
+					vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
+					vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
+				end,
+			})
+			-- You probably also want to set a keymap to toggle aerial
+			vim.keymap.set("n", "<leader>a", "<cmd>call aerial#fzf()<cr>")
+		end,
 	},
 	{
 		"nvim-tree/nvim-tree.lua",
@@ -277,7 +274,7 @@ require("lazy").setup({
 						require("formatter.filetypes.lua").stylua,
 					},
 					java = {
-						require("formatter.filetypes.java").clangformat
+						require("formatter.filetypes.java").clangformat,
 					},
 					-- Use the special "*" filetype for defining formatter configurations on
 					-- any filetype
@@ -383,23 +380,20 @@ require("lazy").setup({
 
 					-- Buffer local mappings.
 					-- See `:help vim.lsp.*` for documentation on any of the below functions
+
+					---@diagnostic disable-next-line: redefined-local
 					local opts = { buffer = ev.buf }
-					local builtin = require("telescope.builtin")
 					vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-					vim.keymap.set("n", "gd", builtin.lsp_definitions, opts)
+					vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 					vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-					vim.keymap.set("n", "gi", builtin.lsp_implementations, opts)
-					vim.keymap.set("n", "gt", builtin.lsp_type_definitions, opts)
+					vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+					vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
 					vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts)
 					vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, opts)
-					vim.keymap.set("n", "gr", builtin.lsp_references, opts)
+					vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
 					--vim.keymap.set('n', '<space>f', function()
 					--vim.lsp.buf.format { async = true }
 					--end, opts)
-					vim.keymap.set("n", "<leader>we", builtin.diagnostics, opts)
-					vim.keymap.set("n", "<leader>de", function()
-						builtin.diagnostics({ bufnr = 0 })
-					end, opts)
 				end,
 			})
 		end,
