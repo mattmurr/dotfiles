@@ -6,6 +6,8 @@ ZSH_TMUX_AUTOSTART=true
 VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
 VI_MODE_SET_CURSOR=true
 
+zstyle ':omz:plugins:nvm' lazy yes
+
 plugins=(
   git
   direnv

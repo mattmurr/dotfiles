@@ -9,8 +9,8 @@
 [commit]
   gpgsign = true
 
-[includeIf "gitdir:~/Repos/work/"]
-  path = "~/Repos/work/.gitconfig"
+[includeIf "gitdir:~/repos/"]
+  path = "~/repos/.gitconfig"
 
 [core]
   excludesfile = "~/.gitignore_global"
