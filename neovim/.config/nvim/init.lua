@@ -16,8 +16,8 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.cursorline = true
 
-vim.o.tabstop = 2
-vim.o.shiftwidth = 2
+vim.o.tabstop = 4
+vim.o.shiftwidth = 4
 vim.o.softtabstop = 2
 vim.o.expandtab = true
 
@@ -52,42 +52,56 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"nvim-lualine/lualine.nvim",
-		event = "UiEnter",
-		dependencies = {
-			"nvim-tree/nvim-web-devicons",
-		},
+		'nvim-telescope/telescope.nvim',
+		tag = '0.1.4',
+		dependencies = { 'nvim-lua/plenary.nvim' },
 		config = function()
-			require("lualine").setup({
-				sections = {
-					lualine_x = { "aerial" },
+			local builtin = require('telescope.builtin')
+			vim.keymap.set('n', '<leader>t', builtin.find_files, {})
+			vim.keymap.set('n', '<leader>g', builtin.live_grep, {})
+			vim.keymap.set('n', '<leader>b', builtin.buffers, {})
+			vim.keymap.set('n', '<leader>h', builtin.help_tags, {})
+			vim.keymap.set('n', '<leader>a', builtin.treesitter, {})
 
-					-- Or you can customize it
-					lualine_y = {
-						{
-							"aerial",
-							-- The separator to be used to separate symbols in status line.
-							sep = " ) ",
-
-							-- The number of symbols to render top-down. In order to render only 'N' last
-							-- symbols, negative numbers may be supplied. For instance, 'depth = -1' can
-							-- be used in order to render only current symbol.
-							depth = nil,
-
-							-- When 'dense' mode is on, icons are not rendered near their symbols. Only
-							-- a single icon that represents the kind of current symbol is rendered at
-							-- the beginning of status line.
-							dense = false,
-
-							-- The separator to be used to separate symbols in dense mode.
-							dense_sep = ".",
-
-							-- Color the symbol icons.
-							colored = true,
+			require("telescope").setup {
+				defaults = {
+					path_display = { "smart" },
+					preview = {
+						filesize_limit = 1.0, -- MB
+					},
+					vimgrep_arguments = {
+						"rg",
+						"--color=never",
+						"--no-heading",
+						"--with-filename",
+						"--line-number",
+						"--column",
+						"--smart-case",
+						"--trim" -- add this value
+					},
+					mappings = {
+						i = {
+							["<C-u>"] = false
 						},
 					},
 				},
-			})
+				pickers = {
+					find_files = {
+						find_command = { "fd", "--type", "f", "--strip-cwd-prefix" }
+					},
+				}
+			}
+		end
+	},
+	{
+		"toppair/peek.nvim",
+		event = { "VeryLazy" },
+		build = "deno task --quiet build:fast",
+		config = function()
+			require("peek").setup()
+			-- refer to `configuration to change defaults`
+			vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+			vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
 		end,
 	},
 	{
@@ -118,6 +132,21 @@ require("lazy").setup({
 				mode = "o",
 				function()
 					require("flash").remote()
+					require("flash").jump({
+						pattern = ".", -- initialize pattern with any char
+						search = {
+							mode = function(pattern)
+								-- remove leading dot
+								if pattern:sub(1, 1) == "." then
+									pattern = pattern:sub(2)
+								end
+								-- return word pattern and proper skip pattern
+								return ([[\<%s\w*\>]]):format(pattern), ([[\<%s]]):format(pattern)
+							end,
+						},
+						-- select the range
+						jump = { pos = "range" },
+					})
 				end,
 				desc = "Remote Flash",
 			},
@@ -130,22 +159,9 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"epwalsh/obsidian.nvim",
-		lazy = true,
-		event = { "BufReadPre " .. vim.fn.expand("~") .. "/Obsidian/Brain2/**.md" },
-		dependencies = {
-			-- Required.
-			"nvim-lua/plenary.nvim",
-
-			-- see below for full list of optional dependencies 👇
-		},
-		opts = {
-			dir = "~/Obsidian/Brain2",
-		},
-	},
-	{
 		"nvim-lualine/lualine.nvim",
-		dependences = { "nvim-tree/nvim-web-devicons" },
+		event = "UiEnter",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
 			require("lualine").setup({
 				theme = "base16",
@@ -161,19 +177,14 @@ require("lazy").setup({
 			"nvim-tree/nvim-web-devicons",
 		},
 		config = function()
-			require("barbecue").setup({
-				theme = "tokyonight",
-			})
+			require("barbecue").setup()
 		end,
 	},
 	"preservim/nerdcommenter",
-	"tpope/vim-sleuth",
 	{
 		"lewis6991/gitsigns.nvim",
 		config = function()
-			require("gitsigns").setup({
-				current_line_blame = false,
-			})
+			require("gitsigns").setup({})
 		end,
 	},
 	{
@@ -195,38 +206,6 @@ require("lazy").setup({
 		opts = {},
 		config = function()
 			require("ibl").setup({})
-		end,
-	},
-	{
-		"junegunn/fzf.vim",
-		dependencies = {
-			"junegunn/fzf",
-		},
-		config = function()
-			vim.keymap.set("n", "<leader>t", ":Files<cr>", opts)
-			vim.keymap.set("n", "<leader>g", ":Rg<cr>", opts)
-			vim.keymap.set("n", "<leader>b", ":Buffers<cr>", opts)
-		end,
-	},
-	{
-		"stevearc/aerial.nvim",
-		opts = {},
-		-- Optional dependencies
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter",
-			"nvim-tree/nvim-web-devicons",
-		},
-		config = function()
-			require("aerial").setup({
-				-- optionally use on_attach to set keymaps when aerial has attached to a buffer
-				on_attach = function(bufnr)
-					-- Jump forwards/backwards with '{' and '}'
-					vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
-					vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
-				end,
-			})
-			-- You probably also want to set a keymap to toggle aerial
-			vim.keymap.set("n", "<leader>a", "<cmd>call aerial#fzf()<cr>")
 		end,
 	},
 	{
@@ -254,43 +233,6 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"mhartington/formatter.nvim",
-		config = function()
-			-- Utilities for creating configurations
-			local util = require("formatter.util")
-
-			-- Provides the Format, FormatWrite, FormatLock, and FormatWriteLock commands
-			require("formatter").setup({
-				-- Enable or disable logging
-				logging = true,
-				-- Set the log level
-				log_level = vim.log.levels.WARN,
-				-- All formatter configurations are opt-in
-				filetype = {
-					python = {
-						require("formatter.filetypes.python").black,
-					},
-					lua = {
-						require("formatter.filetypes.lua").stylua,
-					},
-					java = {
-						require("formatter.filetypes.java").clangformat,
-					},
-					-- Use the special "*" filetype for defining formatter configurations on
-					-- any filetype
-					["*"] = {
-						-- "formatter.filetypes.any" defines default configurations for any
-						-- filetype
-						require("formatter.filetypes.any").remove_trailing_whitespace,
-					},
-				},
-			})
-
-			vim.keymap.set("n", "<leader>f", "<cmd> :Format<CR>", opts)
-			vim.keymap.set("n", "<leader>F", "<cmd> :FormatWrite<CR>", opts)
-		end,
-	},
-	{
 		"neovim/nvim-lspconfig",
 		dependencies = {
 			"williamboman/mason.nvim",
@@ -302,7 +244,6 @@ require("lazy").setup({
 
 			local nvim_lsp = require("lspconfig")
 			local servers = {
-				"ruff_lsp",
 				"pyright",
 				"tsserver",
 				"gopls",
@@ -364,10 +305,6 @@ require("lazy").setup({
 							allExperiments = true,
 						},
 					}
-				elseif lsp == "ruff-lsp" then
-					opts.on_attach = function(client, bufnr)
-						client.server_capabilities.hoverProvider = false
-					end
 				end
 				nvim_lsp[lsp].setup(opts)
 			end
@@ -391,9 +328,9 @@ require("lazy").setup({
 					vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts)
 					vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, opts)
 					vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-					--vim.keymap.set('n', '<space>f', function()
-					--vim.lsp.buf.format { async = true }
-					--end, opts)
+					vim.keymap.set('n', '<space>f', function()
+						vim.lsp.buf.format({ async = true })
+					end, opts)
 				end,
 			})
 		end,
