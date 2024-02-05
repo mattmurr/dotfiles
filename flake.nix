@@ -15,7 +15,9 @@
       "Matthews-MacBook-Air" = darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         modules = [
-          ./configuration.nix
+          ./configuration.nix {
+            users.users.matt.home = "/Users/matt";
+          }
 
           home-manager.darwinModules.home-manager
           {
@@ -30,7 +32,9 @@
       "AMAC02FL440MD6R" = darwin.lib.darwinSystem {
         system = "x86_64-darwin";
         modules = [
-          ./configuration.nix
+          ./configuration.nix {
+            users.users.matt.home = "/Users/matthew.b.murray";
+          }
 
           home-manager.darwinModules.home-manager
           {

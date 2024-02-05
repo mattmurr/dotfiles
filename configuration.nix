@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, mainUser, ... }: {
   nix.package = pkgs.nixVersions.unstable;
   nixpkgs.config.allowUnfree = true;
   nix.extraOptions = ''
@@ -24,8 +24,6 @@
   programs.zsh.enable = true;
   environment.shells = [ pkgs.zsh ];
   environment.loginShell = pkgs.zsh;
-
-  users.users.matt.home = "/Users/matt";
 
   system.stateVersion = 4;
 }
