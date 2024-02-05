@@ -6,14 +6,11 @@
 [gpg]
   format = ssh
 
-[gpg "ssh"]
-  program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
-
 [commit]
   gpgsign = true
 
-[includeIf "gitdir:~/Repos/work/"]
-  path = "~/Repos/work/.gitconfig"
+[includeIf "gitdir:~/repos/work/"]
+  path = "~/repos/work/.gitconfig"
 
 [core]
   excludesfile = "~/.gitignore_global"

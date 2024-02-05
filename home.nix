@@ -1,21 +1,18 @@
 ({ config, pkgs, lib, ... }: {
   home.stateVersion = "22.11";
   home.packages = [
-    pkgs.git
     pkgs.ripgrep
     pkgs.fd
     pkgs.curlie
     pkgs.github-cli
-    pkgs._1password
     pkgs.nodejs
-    pkgs.ltex-ls
+    pkgs.colima
   ];
   home.sessionVariables = {
     EDITOR = "nvim";
   };
   programs.git = {
     enable = true;
-    extraConfig = builtins.readFile ./git/.gitconfig;
   };
   home.file.".gitignore_global".source = ./git/.gitignore_global;
   programs.bat.enable = true;
@@ -26,7 +23,7 @@
     enable = true;
     enableCompletion = true;
     enableAutosuggestions = true;
-    enableSyntaxHighlighting = true;
+    syntaxHighlighting.enable = true;
     shellAliases = {
       curl = "curlie";
       ls = "ls --color=auto -F";
@@ -44,13 +41,40 @@
       export FZF_ALT_C_COMMAND="fd -t d --hidden --follow --exclude '.git' --ignore-file $HOME/.gitignore_global --color=always"
       export FZF_DEFAULT_OPTS="--height 100% --layout=reverse --border --ansi"
       export FZF_CTRL_T_OPTS="$FZF_DEFAULT_OPTS --preview 'bat --style=numbers --color=always --line-range :500 {}'"
-
     '';
+    oh-my-zsh = {
+      enable = true;
+      plugins = [
+        "tmux"
+      ];
+      extraConfig = ''
+        ZSH_TMUX_AUTOSTART=true
+      '';
+    };
+  };
+  programs.tmux = {
+    enable = true;
+    extraConfig = builtins.readFile ./tmux/.tmux.conf;
+    plugins = with pkgs; [
+      tmuxPlugins.fzf-tmux-url
+      {
+        plugin = tmuxPlugins.tmux-fzf;
+        extraConfig = "TMUX_FZF_OPTIONS=\"-p -w 80% -h 80% -m\"";
+      }
+      {
+        plugin = tmuxPlugins.fuzzback;
+        extraConfig = ''
+          set -g @fuzzback-popup 1
+          set -g @fuzzback-finder-layout 'reverse'
+          set -g @fuzzback-popup-size '80%'
+        '';
+      }
+    ];
   };
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
-    enableZshIntegration = true;
+    enableBashIntegration = true;
   };
   home.file.".prettierrc".source = ./misc/.prettierrc;
   programs.neovim = {
@@ -68,33 +92,23 @@
       nodePackages.pyright
       nodePackages.typescript
       nodePackages.typescript-language-server
-      rnix-lsp
       sumneko-lua-language-server
-      # NOTE: https://github.com/eclipse/eclipse.jdt.ls/pull/2258
-      (jdt-language-server.overrideAttrs (oldAttrs: {
-        src = fetchurl {
-          url = "https://download.eclipse.org/jdtls/milestones/1.19.0/jdt-language-server-1.19.0-202301171536.tar.gz";
-          sha256 = "sha256-9rreuMw2pODzOVX5PBmUZoV5ixUDilQyTsrnyCQ+IHs=";
-        };
-      }))
+      jdt-language-server
+      nixd
     ];
     plugins = with pkgs.vimPlugins; [
-      nvim-treesitter.withAllGrammars
+      (nvim-treesitter.withPlugins (plugins: pkgs.tree-sitter.allGrammars))
       gruvbox-nvim
       fzf-vim
       nvim-lspconfig
-      null-ls-nvim
       nvim-jdtls
       lsp_signature-nvim
       gitsigns-nvim
       vim-sleuth
       fidget-nvim
       todo-comments-nvim
-      nvim-tree-lua
       nerdcommenter
-      vimwiki
       indent-blankline-nvim
-      orgmode
       nvim-cmp
       cmp-nvim-lsp
       cmp-buffer
@@ -102,6 +116,12 @@
       cmp-cmdline
       luasnip
       cmp_luasnip
+      friendly-snippets
+      lspkind-nvim
+      oil-nvim
+      nvim-navic
+      nvim-web-devicons
+      barbecue-nvim
     ];
   };
   xdg.configFile.nvim = {
@@ -109,41 +129,51 @@
     recursive = true;
   };
   xdg.configFile."nvim/ftplugin/java.lua".text = ''
-    local capabilities = require('cmp_nvim_lsp').default_capabilities()
-    local jdtls_capabilities = require 'jdtls'.extendedClientCapabilities
+local home = vim.env.HOME
+local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
+local workspace_dir = home .. '/.local/share/eclipse/' .. project_name
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+local jdtls_capabilities = require 'jdtls'.extendedClientCapabilities
 
-    local jdtls_cmd = require('lspconfig')['jdtls'].document_config.default_config.cmd
-    jdtls_cmd[1] = "jdt-language-server"
-
-    local config = {
-      cmd = jdtls_cmd,
-      root_dir = vim.fs.dirname(vim.fs.find({ '.gradlew', '.git', 'mvnw' }, { upward = true })[1]),
-
-      settings = {
-        java = {
-          signatureHelp = { enabled = true };
-          configuration = {
-            runtimes = {
-              {
-                name = 'JavaSE-1.8',
-                path = '${pkgs.openjdk8.home}',
-              }
-            }
+local config = {
+  cmd = { '${pkgs.jdt-language-server}/bin/jdtls', '-javaagent:' .. '${pkgs.lombok}/share/java/lombok.jar=ECJ' },
+  root_dir = vim.fs.dirname(vim.fs.find({ '.gradlew', '.git', 'mvnw' }, { upward = true })[1]),
+  settings = {
+    java = {
+      signatureHelp = { enabled = true };
+      configuration = {
+        runtimes = {
+          {
+            name = 'JavaSE-17',
+            path = '${pkgs.jdk17}',
+          },
+          {
+            name = 'JavaSE-1.8',
+            path = '${pkgs.jdk8}',
+          },
+          {
+            name = 'JavaSE-21',
+            path = '${pkgs.jdk21}',
+            default = true
           }
-        },
+
+        }
       },
+      format = {
+        settings = {
+          url = 'https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml',
+          profile = 'GoogleStyle'
+        }
+      }
+    },
+  },
 
-      init_options = {
-        bundles = {}
-      },
+  capabilities = vim.tbl_deep_extend("keep", capabilities, jdtls_capabilities)
+}
+-- Disable echo for loading, we use fidget.nvim
+config.handlers = {['language/status'] = function() end}
 
-      capabilities = vim.tbl_deep_extend("keep", {capabilities, jdtls_capabilities}),
-      on_attach = function(client, bufnr)
-        require 'common'.on_attach(client, bufnr)
-        require('jdtls.setup').add_commands()
-      end
-    }
-
-    require('jdtls').start_or_attach(config)
+require('jdtls').start_or_attach(config)
+require('jdtls.setup').add_commands()
   '';
 })
