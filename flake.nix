@@ -29,11 +29,11 @@
           }
         ];
       };
-      "AMAC02FL440MD6R" = darwin.lib.darwinSystem {
-        system = "x86_64-darwin";
+      "AMAH9YKTK0J7J" = darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
         modules = [
           ./configuration.nix {
-            users.users.matt.home = "/Users/matthew.b.murray";
+            users.users."matthew.b.murray".home = "/Users/matthew.b.murray";
           }
 
           home-manager.darwinModules.home-manager

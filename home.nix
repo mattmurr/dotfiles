@@ -7,6 +7,12 @@
     pkgs.github-cli
     pkgs.nodejs
     pkgs.colima
+    pkgs.docker-credential-helpers
+    pkgs.docker
+    pkgs.lazygit
+    pkgs.kubectl
+    pkgs.consul
+    pkgs.htop
   ];
   home.sessionVariables = {
     EDITOR = "nvim";
@@ -48,6 +54,7 @@
         "tmux"
       ];
       extraConfig = ''
+        zstyle ':bracketed-paste-magic' active-widgets '.self-*'
         ZSH_TMUX_AUTOSTART=true
       '';
     };
