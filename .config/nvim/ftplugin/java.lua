@@ -9,13 +9,13 @@ local jdtls_capabilities = require 'jdtls'.extendedClientCapabilities
 
 local config = {
   cmd = {
-    home .. '/.jenv/versions/17.0/bin/java',
+    home .. '/.jenv/versions/21.0/bin/java',
     '-Declipse.application=org.eclipse.jdt.ls.core.id1',
     '-Dosgi.bundles.defaultStartLevel=4',
     '-Declipse.product=org.eclipse.jdt.ls.core.product',
     '-Dlog.protocol=true',
     '-Dlog.level=ALL',
-    '-Xms1g',
+    '-Xms2g',
     '-Xmx8g',
     '--add-modules=ALL-SYSTEM',
     '--add-opens', 'java.base/java.util=ALL-UNNAMED',
@@ -32,9 +32,17 @@ local config = {
       configuration = {
         runtimes = {
           {
-            name = 'JavaSE-17',
-            path = vim.env.HOME .. '/.jenv/versions/17.0',
+            name = 'JavaSE-21',
+            path = vim.env.HOME .. '/.jenv/versions/21.0',
             default = true
+          },
+          {
+            name = 'JavaSE-17',
+            path = vim.env.HOME .. '/.jenv/versions/17.0'
+          },
+          {
+            name = 'JavaSE-11',
+            path = vim.env.HOME .. '/.jenv/versions/11.0',
           },
           {
             name = 'JavaSE-1.8',
