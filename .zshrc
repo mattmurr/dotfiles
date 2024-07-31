@@ -74,7 +74,7 @@ ZSH_TMUX_AUTOSTART="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git vi-mode tmux direnv zoxide command-not-found fd ripgrep fzf jenv nvm)
+plugins=(git vi-mode tmux direnv zoxide command-not-found fzf jenv nvm pyenv)
 
 source $ZSH/oh-my-zsh.sh
 

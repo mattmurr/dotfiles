@@ -34,3 +34,4 @@ cask "font-iosevka-nerd-font"
 tap "sst/tap"
 brew "sst"
 
+brew "esptool"
