@@ -12,6 +12,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.cursorline = true
@@ -21,6 +22,7 @@ vim.o.tabstop = 2
 vim.o.shiftwidth = 2
 vim.o.softtabstop = 2
 vim.o.expandtab = true
+vim.o.conceallevel = 2
 
 vim.o.ignorecase = true
 vim.o.incsearch = false
@@ -54,7 +56,7 @@ require("lazy").setup({
   },
   {
     'nvim-telescope/telescope.nvim',
-    tag = '0.1.4',
+    tag = '0.1.8',
     dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
       local builtin = require('telescope.builtin')
@@ -104,6 +106,35 @@ require("lazy").setup({
     config = function()
       vim.cmd("colorscheme kanagawa-wave")
     end,
+  },
+  {
+    "lervag/wiki.vim",
+    config = function()
+      vim.cmd([[let g:wiki_root = '~/wiki']])
+    end
+  },
+  {
+    "OXY2DEV/markview.nvim",
+    lazy = false,
+    ft = "markdown",
+
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons"
+    },
+    config = function()
+      require("markview").setup({
+        modes = { "n", "no", "c" },
+
+        hybrid_modes = { "n" },
+        callbacks = {
+          on_enable = function(_, win)
+            vim.wo[win].conceallevel = 2;
+            vim.wo[win].concealcursor = "c";
+          end
+        }
+      })
+    end
   },
   {
     "cbochs/grapple.nvim",
@@ -232,7 +263,7 @@ require("lazy").setup({
       local nvim_lsp = require("lspconfig")
       local servers = {
         "pyright",
-        "tsserver",
+        "ts_ls",
         "gopls",
         "lua_ls",
         "solargraph",

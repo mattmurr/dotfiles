@@ -67,7 +67,7 @@ ZSH_THEME="robbyrussell"
 
 zstyle ':omz:plugins:nvm' lazy yes
 
-ZSH_TMUX_AUTOSTART="true"
+ZSH_TMUX_AUTOSTART="false"
 
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/

@@ -35,3 +35,7 @@ tap "sst/tap"
 brew "sst"
 
 brew "esptool"
+brew "android-platform-tools"
+brew "llvm"
+
+brew "zk"
