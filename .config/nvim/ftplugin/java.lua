@@ -4,8 +4,8 @@ local workspace_dir = home .. '/.local/share/eclipse/' .. project_name
 local mason = home .. '/.local/share/nvim/mason'
 local jdtls = mason .. '/packages/jdtls'
 
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
-local jdtls_capabilities = require 'jdtls'.extendedClientCapabilities
+local capabilities = vim.tml_deep_extend('force', require'jdtls'.extendedClientCapabilities,
+require'coq'.lsp_ensure_capabilities())
 
 local config = {
   cmd = {
@@ -58,8 +58,7 @@ local config = {
       }
     },
   },
-
-  capabilities = vim.tbl_deep_extend("keep", capabilities, jdtls_capabilities)
+  capabilities = capabilities
 }
 -- Disable echo for loading, we use fidget.nvim
 config.handlers = {['language/status'] = function() end}

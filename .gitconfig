@@ -1,10 +1,7 @@
 [user]
   name = Matthew Murray
   email = elegant.dusk3770@fastmail.com
-  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFZWac1+fHsX/vTMTdhKlBJU22eS+1pLE4Fr4q4/y/sK
-
-[gpg]
-  format = ssh
+  signingkey = 2B23FA574DBAD205C8EC60FA0BF8EEEC9FAC39CC
 
 [commit]
   gpgsign = true

@@ -1,7 +1,12 @@
+brew "mas"
+
+brew "gpg"
+brew "pinentry-mac"
+brew "pass"
+brew "pass-otp"
 brew "yadm"
 brew "tmux"
 brew "direnv"
-brew "zoxide"
 brew "fzf"
 brew "ripgrep"
 brew "fd"
@@ -16,26 +21,22 @@ brew "neovim"
 brew "docker-buildx"
 brew "docker-credential-helper"
 brew "lazygit"
+brew "tree-sitter"
+brew "gnu-sed"
 
-tap "homebrew/cask-versions"
-cask "temurin21"
-cask "temurin17"
-cask "temurin11"
-cask "temurin8"
+cask "wezterm"
 
-tap "spring-io/tap"
-brew "spring-boot"
+cask "temurin@21"
+cask "temurin@17"
+cask "temurin@11"
+cask "temurin@8"
 
-brew "tabbyml/tabby/tabby"
-
-tap "homebrew/cask-fonts"
 cask "font-iosevka-nerd-font"
 
-tap "sst/tap"
-brew "sst"
-
 brew "esptool"
-brew "android-platform-tools"
-brew "llvm"
+cask "android-platform-tools"
 
-brew "zk"
+cask "lm-studio"
+mas "Bitwarden", id: 1352778147
+
+brew "gh"
