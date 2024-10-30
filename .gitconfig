@@ -11,6 +11,7 @@
 
 [core]
   excludesfile = "~/.gitignore_global"
+	ignorecase = false
 
 [color]
   ui = auto

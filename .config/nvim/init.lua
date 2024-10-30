@@ -61,6 +61,9 @@ require('mason-lspconfig').setup({
     function(server_name)
       require('lspconfig')[server_name].setup({})
     end,
+
+    -- Disable jdtls setup, is handled by nvim-jdtls
+    ['jdtls'] = function() end
   }
 })
 

@@ -2,11 +2,11 @@ return {
   {
     "zbirenbaum/copilot-cmp",
     dependencies = {
-      "zbirenbaum/copilot.lua", opts = {},
+      "zbirenbaum/copilot.lua", opts = {
+        ['suggestion.enabled'] = false,
+        ['panel.enabled'] = false,
+      }
     },
-    opts = {
-      ['suggestion.enabled'] = false,
-      ['panel.enabled'] = false,
-    }
+    opts = {}
   }
 }

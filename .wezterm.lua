@@ -33,12 +33,16 @@ config.keys = {
     key = 'k',
     mods = 'LEADER',
     action = wezterm.action.ActivatePaneDirection 'Up'
+  },
+  {
+    key = 'z',
+    mods = 'LEADER',
+    action = wezterm.action.TogglePaneZoomState,
   }
-
 }
 
 config.font = wezterm.font("Iosevka Nerd Font Mono")
-config.font_size = 13.0
+config.font_size = 14.0
 config.send_composed_key_when_right_alt_is_pressed = true
 
 return config

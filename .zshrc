@@ -74,7 +74,7 @@ VI_MODE_SET_CURSOR=true
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(jenv nvm vi-mode git)
+plugins=(jenv nvm vi-mode git fzf)
 
 source $ZSH/oh-my-zsh.sh
 

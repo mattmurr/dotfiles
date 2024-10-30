@@ -3,9 +3,9 @@ local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
 local workspace_dir = home .. '/.local/share/eclipse/' .. project_name
 local mason = home .. '/.local/share/nvim/mason'
 local jdtls = mason .. '/packages/jdtls'
+local lombok = mason .. '/share/lombok-nightly/lombok.jar'
 
-local capabilities = vim.tml_deep_extend('force', require'jdtls'.extendedClientCapabilities,
-require'coq'.lsp_ensure_capabilities())
+local capabilities = vim.tbl_deep_extend('force', require'jdtls'.extendedClientCapabilities, require'cmp_nvim_lsp'.default_capabilities())
 
 local config = {
   cmd = {
@@ -20,7 +20,7 @@ local config = {
     '--add-modules=ALL-SYSTEM',
     '--add-opens', 'java.base/java.util=ALL-UNNAMED',
     '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
-    '-javaagent:' .. jdtls .. '/lombok.jar=ECJ',
+    '-javaagent:' .. lombok .. '=ECJ',
     '-jar', vim.fn.glob(jdtls .. '/plugins/org.eclipse.equinox.launcher_*.jar', 1),
     '-configuration', jdtls .. '/config_mac',
     '-data', workspace_dir

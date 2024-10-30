@@ -23,6 +23,7 @@ brew "docker-credential-helper"
 brew "lazygit"
 brew "tree-sitter"
 brew "gnu-sed"
+brew "lombok"
 
 cask "wezterm"
 
