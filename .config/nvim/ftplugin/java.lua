@@ -3,9 +3,14 @@ local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
 local workspace_dir = home .. '/.local/share/eclipse/' .. project_name
 local mason = home .. '/.local/share/nvim/mason'
 local jdtls = mason .. '/packages/jdtls'
-local lombok = mason .. '/share/lombok-nightly/lombok.jar'
+local lombok = jdtls .. '/lombok.jar'
 
 local capabilities = vim.tbl_deep_extend('force', require'jdtls'.extendedClientCapabilities, require'cmp_nvim_lsp'.default_capabilities())
+
+local spring_path = require("mason-registry")
+    .get_package("spring-boot-tools")
+     :get_install_path() .. "/extension/jars/*.jar"
+local spring = vim.split(vim.fn.glob(spring_path), "\n", {})
 
 local config = {
   cmd = {
@@ -58,7 +63,10 @@ local config = {
       }
     },
   },
-  capabilities = capabilities
+  capabilities = capabilities,
+  init_options = {
+    bundles = require("spring_boot").java_extensions()
+  }
 }
 -- Disable echo for loading, we use fidget.nvim
 config.handlers = {['language/status'] = function() end}

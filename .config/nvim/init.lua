@@ -44,7 +44,7 @@ vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 require("lazy").setup("plugins")
 
 vim.cmd [[colorscheme moonfly]]
-vim.cmd [[let g:wiki_root = "~/Desktop/wiki"]]
+vim.cmd [[let g:wiki_root = "~/wiki"]]
 
 vim.keymap.set('n', '<leader>ss', '<cmd>lua require"spectre".toggle()<cr>', opts)
 
@@ -143,6 +143,15 @@ vim.api.nvim_create_autocmd('LspAttach', {
 vim.keymap.set('n', '<leader>xx', '<cmd>lua require"fzf-lua".diagnostics_document()<cr>', opts)
 vim.keymap.set('n', '<leader>xX', '<cmd>lua require"fzf-lua".diagnostics_workspace()<cr>', opts)
 
+-- vim.g.spring_boot = {
+--   jdt_extensions_jars = {
+--     "io.projectreactor.reactor-core.jar",
+--     "org.reactivestreams.reactive-streams.jar",
+--     "jdt-ls-commons.jar",
+--     "jdt-ls-extension.jar",
+--   },
+-- }
+
 -- Add cmp capabilities settings to lspconfig
 -- This should be executed before you configure any language server
 local lspconfig_defaults = require('lspconfig').util.default_config
@@ -151,6 +160,8 @@ lspconfig_defaults.capabilities = vim.tbl_deep_extend(
   lspconfig_defaults.capabilities,
   require 'cmp_nvim_lsp'.default_capabilities()
 )
+
+require('spring_boot').init_lsp_commands()
 
 lspconfig.lua_ls.setup {}
 lspconfig.ltex.setup {

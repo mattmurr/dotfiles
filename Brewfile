@@ -2,6 +2,8 @@ brew "mas"
 
 brew "gpg"
 brew "pinentry-mac"
+brew "age"
+brew "age-plugin-yubikey"
 brew "pass"
 brew "pass-otp"
 brew "yadm"
@@ -13,6 +15,7 @@ brew "fd"
 brew "colima"
 brew "docker"
 brew "docker-compose"
+brew "nerdctl"
 brew "jenv"
 brew "nvm"
 brew "pyenv"
@@ -24,6 +27,7 @@ brew "lazygit"
 brew "tree-sitter"
 brew "gnu-sed"
 brew "lombok"
+brew "ranger"
 
 cask "wezterm"
 
@@ -41,3 +45,8 @@ cask "lm-studio"
 mas "Bitwarden", id: 1352778147
 
 brew "gh"
+
+tap "pivotal/tap"
+brew "pivotal/tap/springboot"
+
+cask "zerotier-one"

@@ -1,7 +1,7 @@
 [user]
   name = Matthew Murray
-  email = mattmurr001@gmail.com
-  signingkey = 2B23FA574DBAD205C8EC60FA0BF8EEEC9FAC39CC
+  email = matt@compti.me
+  signingkey = 3A677B437652A0BBB89566E78EF3AD6D4E980017
 
 [commit]
   gpgsign = true
