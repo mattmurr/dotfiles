@@ -50,3 +50,6 @@ tap "pivotal/tap"
 brew "pivotal/tap/springboot"
 
 cask "zerotier-one"
+
+cask "sol"
+cask "calibre"

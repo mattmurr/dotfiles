@@ -65,7 +65,7 @@ local config = {
   },
   capabilities = capabilities,
   init_options = {
-    bundles = require("spring_boot").java_extensions()
+    bundles = spring
   }
 }
 -- Disable echo for loading, we use fidget.nvim
