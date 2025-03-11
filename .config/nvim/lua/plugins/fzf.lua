@@ -4,7 +4,7 @@ return {
   dependencies = { "echasnovski/mini.icons" },
   opts = {
     files = {
-      path_shorten = 1
+      path_shorten = 2
     }
   }
 }

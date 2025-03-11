@@ -21,34 +21,6 @@ return {
       });
     end
   },
-  -- {
-  --   "nvim-tree/nvim-tree.lua",
-  --   version = "*",
-  --   lazy = false,
-  --   dependencies = {
-  --     "nvim-tree/nvim-web-devicons",
-  --   },
-  --   opts = {
-  --     update_focused_file = {
-  --       enable = true
-  --     }
-  --   }
-  -- },
-  -- {
-  --   {
-  --     "antosha417/nvim-lsp-file-operations",
-  --     dependencies = {
-  --       "nvim-lua/plenary.nvim",
-  --       -- Uncomment whichever supported plugin(s) you use
-  --       "nvim-tree/nvim-tree.lua",
-  --       -- "nvim-neo-tree/neo-tree.nvim",
-  --       -- "simonmclean/triptych.nvim"
-  --     },
-  --     config = function()
-  --       require("lsp-file-operations").setup()
-  --     end,
-  --   },
-  -- },
   {
     "folke/which-key.nvim",
     event = "VeryLazy",
@@ -82,5 +54,6 @@ return {
     ---@type oil.SetupOpts
     opts = {},
     dependencies = { { "echasnovski/mini.icons", opts = {} } },
-  }
+  },
+  { 'chentoast/marks.nvim' }
 }

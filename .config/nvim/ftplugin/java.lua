@@ -5,7 +5,7 @@ local mason = home .. '/.local/share/nvim/mason'
 local jdtls = mason .. '/packages/jdtls'
 local lombok = jdtls .. '/lombok.jar'
 
-local capabilities = vim.tbl_deep_extend('force', require'jdtls'.extendedClientCapabilities, require'cmp_nvim_lsp'.default_capabilities())
+local capabilities = require'jdtls'.extendedClientCapabilities
 
 local spring_path = require("mason-registry")
     .get_package("spring-boot-tools")

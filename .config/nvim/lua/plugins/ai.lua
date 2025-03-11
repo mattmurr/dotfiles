@@ -1,23 +1,28 @@
 return {
   {
-    "zbirenbaum/copilot-cmp",
-    dependencies = {
-      "zbirenbaum/copilot.lua",
-      opts = {
-        ['suggestion.enabled'] = false,
-        ['panel.enabled'] = false,
-      }
-    },
-    opts = {}
+    "zbirenbaum/copilot.lua",
+    opts = {
+      ['suggestion.enabled'] = false,
+      ['panel.enabled'] = false,
+    }
   },
   {
-    "CopilotC-Nvim/CopilotChat.nvim",
+    "olimorris/codecompanion.nvim",
     dependencies = {
-      { "zbirenbaum/copilot.lua" },
-      { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
     },
-    build = "make tiktoken",       -- Only on MacOS or Linux
-    opts = {},
-    -- See Commands section for default commands if you want to lazy load on them
-  }
+    config = function()
+      require"codecompanion".setup {
+        strategies = {
+          chat = {
+            adapter = "copilot",
+          },
+          inline = {
+            adapter = "copilot",
+          },
+        },
+      }
+    end
+  },
 }

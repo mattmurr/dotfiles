@@ -74,7 +74,7 @@ VI_MODE_SET_CURSOR=true
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(jenv tmux nvm vi-mode git fzf)
+plugins=(jenv tmux nvm vi-mode git fzf direnv pyenv)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -109,3 +109,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:/Users/matt/.cache/lm-studio/bin"
+
+# Add JBang to environment
+alias j!=jbang
+export PATH="$HOME/.jbang/bin:$PATH"

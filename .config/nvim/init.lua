@@ -69,73 +69,6 @@ require('mason-lspconfig').setup({
 })
 
 local lspconfig = require 'lspconfig'
-
--- Set up nvim-cmp.
-local cmp = require 'cmp'
-vim.cmd([[set completeopt=menu,menuone,noselect]])
-
-cmp.setup({
-  snippet = {
-    -- REQUIRED - you must specify a snippet engine
-    -- expand = function(args)
-    --   require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-    -- end,
-  },
-  window = {
-    completion = cmp.config.window.bordered(),
-    documentation = cmp.config.window.bordered(),
-  },
-  mapping = cmp.mapping.preset.insert({
-    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.abort(),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-  }),
-  sources = cmp.config.sources({
-    { name = 'lazydev', group_index = 0 },
-    { name = 'nvim_lsp' },
-    { name = 'luasnip' }, -- For luasnip users.
-    { name = 'copilot' },
-  }, {
-    { name = 'buffer' },
-  }),
-  formatting = {
-    format = require 'lspkind'.cmp_format({
-      mode = 'symbol_text',
-      menu = ({
-        buffer = "[Buffer]",
-        nvim_lsp = "[LSP]",
-        luasnip = "[LuaSnip]",
-        nvim_lua = "[Lua]",
-        latex_symbols = "[Latex]",
-        copilot = "[Copilot]"
-      }),
-      maxwidth = 75,
-      symbol_map = { Copilot = "" }
-    }),
-  },
-})
-
--- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline({ '/', '?' }, {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = {
-    { name = 'buffer' }
-  }
-})
-
--- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline(':', {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = cmp.config.sources({
-    { name = 'path' }
-  }, {
-    { name = 'cmdline' }
-  }),
-  matching = { disallow_symbol_nonprefix_matching = false }
-})
-
 -- This is where you enable features that only work
 -- if there is a language server active in the file
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -168,15 +101,6 @@ vim.keymap.set('n', '<leader>xX', '<cmd>lua require"fzf-lua".diagnostics_workspa
 --   },
 -- }
 
--- Add cmp capabilities settings to lspconfig
--- This should be executed before you configure any language server
-local lspconfig_defaults = require('lspconfig').util.default_config
-lspconfig_defaults.capabilities = vim.tbl_deep_extend(
-  'force',
-  lspconfig_defaults.capabilities,
-  require 'cmp_nvim_lsp'.default_capabilities()
-)
-
 require('spring_boot').init_lsp_commands()
 
 lspconfig.lua_ls.setup {}
@@ -189,3 +113,4 @@ lspconfig.ltex.setup {
 }
 lspconfig.basedpyright.setup {}
 lspconfig.marksman.setup {}
+lspconfig.lemminx.setup {}

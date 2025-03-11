@@ -26,7 +26,6 @@ brew "docker-credential-helper"
 brew "lazygit"
 brew "tree-sitter"
 brew "gnu-sed"
-brew "lombok"
 brew "ranger"
 
 cask "wezterm"
@@ -35,21 +34,23 @@ cask "temurin@21"
 cask "temurin@17"
 cask "temurin@11"
 cask "temurin@8"
+brew "maven"
+tap "jbangdev/tap"
+brew "jbang"
 
 cask "font-iosevka-nerd-font"
 
 brew "esptool"
 cask "android-platform-tools"
 
-cask "lm-studio"
+cask "ollama"
 mas "Bitwarden", id: 1352778147
 
 brew "gh"
 
-tap "pivotal/tap"
-brew "pivotal/tap/springboot"
-
-cask "zerotier-one"
-
-cask "sol"
 cask "calibre"
+
+cask "tailscale"
+
+brew "go"
+brew "zig"
