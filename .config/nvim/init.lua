@@ -46,7 +46,9 @@ vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 
 require("lazy").setup("plugins")
 
-vim.cmd [[colorscheme moonfly]]
+-- vim.cmd [[colorscheme moonfly]]
+vim.o.background = "dark" -- or "light" for light mode
+vim.cmd([[colorscheme gruvbox]])
 vim.cmd [[let g:wiki_root = "~/wiki"]]
 
 require 'fzf-lua'.register_ui_select()
@@ -56,19 +58,7 @@ vim.keymap.set("n", "<leader>b", require 'fzf-lua'.buffers, opts)
 vim.keymap.set("n", "<leader>m", require 'fzf-lua'.marks, opts)
 
 require("mason").setup()
-require('mason-lspconfig').setup({
-  automatic_installation = true,
-  handlers = {
-    function(server_name)
-      require('lspconfig')[server_name].setup({})
-    end,
 
-    -- Disable jdtls setup, is handled by nvim-jdtls
-    ['jdtls'] = function() end
-  }
-})
-
-local lspconfig = require 'lspconfig'
 -- This is where you enable features that only work
 -- if there is a language server active in the file
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -103,14 +93,18 @@ vim.keymap.set('n', '<leader>xX', '<cmd>lua require"fzf-lua".diagnostics_workspa
 
 require('spring_boot').init_lsp_commands()
 
-lspconfig.lua_ls.setup {}
-lspconfig.ltex.setup {
+vim.lsp.config['ltex'] = {
   settings = {
     ltex = {
       language = "en-GB",
     },
   }
 }
-lspconfig.basedpyright.setup {}
-lspconfig.marksman.setup {}
-lspconfig.lemminx.setup {}
+vim.lsp.enable({
+  'lua_ls',
+  'ltex',
+  'basedpyright',
+  'marksman',
+  'lenninx'
+})
+

@@ -7,11 +7,6 @@ local lombok = jdtls .. '/lombok.jar'
 
 local capabilities = require'jdtls'.extendedClientCapabilities
 
-local spring_path = require("mason-registry")
-    .get_package("spring-boot-tools")
-     :get_install_path() .. "/extension/jars/*.jar"
-local spring = vim.split(vim.fn.glob(spring_path), "\n", {})
-
 local config = {
   cmd = {
     home .. '/.jenv/versions/21.0/bin/java',
@@ -65,7 +60,7 @@ local config = {
   },
   capabilities = capabilities,
   init_options = {
-    bundles = spring
+    bundles = require("spring_boot").java_extensions()
   }
 }
 -- Disable echo for loading, we use fidget.nvim

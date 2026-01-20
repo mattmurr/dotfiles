@@ -1,11 +1,9 @@
 brew "mas"
 
+brew "pam-reattach"
+
 brew "gpg"
 brew "pinentry-mac"
-brew "age"
-brew "age-plugin-yubikey"
-brew "pass"
-brew "pass-otp"
 brew "yadm"
 brew "tmux"
 brew "direnv"
@@ -28,7 +26,7 @@ brew "tree-sitter"
 brew "gnu-sed"
 brew "ranger"
 
-cask "wezterm"
+cask "ghostty"
 
 cask "temurin@21"
 cask "temurin@17"
@@ -45,12 +43,21 @@ cask "android-platform-tools"
 
 cask "ollama"
 mas "Bitwarden", id: 1352778147
+mas "Infuse", id: 1136220934
 
 brew "gh"
+cask "copilot-cli"
 
 cask "calibre"
 
-cask "tailscale"
-
 brew "go"
 brew "zig"
+
+cask "proton-drive"
+cask "google-drive"
+
+brew "nmap"
+
+cask "microsoft-teams"
+
+tap "tw93/tap"

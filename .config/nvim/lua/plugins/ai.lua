@@ -4,6 +4,10 @@ return {
     opts = {
       ['suggestion.enabled'] = false,
       ['panel.enabled'] = false,
+      ['telemetry.telemetryLevel'] = 'off',
+      logger = {
+				file_log_level = vim.log.levels.TRACE,
+			},
     }
   },
   {
